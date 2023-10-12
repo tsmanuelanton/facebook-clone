@@ -1,6 +1,17 @@
 import type { Post as PostType } from "../types/posts";
+import { useEffect, useState } from "react";
+import getTimeAgo from "../utils/TimeAgo";
+
 
 const PostCard = ({ post }: { post: PostType }) => {
+  const [timeAgo, setTimeAgo] = useState(getTimeAgo(post.created_at));
+
+  useEffect(() => {
+    const intervalID = setInterval(() => setTimeAgo(getTimeAgo(post.created_at)), 1000 * 60)
+
+    return () => clearInterval(intervalID)
+  }, []);
+
   return (
     <div className="rounded-md shadow-md w-2/3 p-3 divide-y-2 space-y-4 bg-white ">
       <div className="flex space-x-2">
@@ -12,7 +23,7 @@ const PostCard = ({ post }: { post: PostType }) => {
         <div>
           <p className="font-medium">{post.user.name}</p>
           <p className="text-sm font-medium text-gray-500">
-            {post.created_at.toISOString()}
+            {timeAgo}
           </p>
         </div>
       </div>
