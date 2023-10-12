@@ -1,14 +1,40 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import NewPost from '../components/NewPost'
+import Layout from "../layouts/Layout.astro";
+import PostList from "../components/PostCardList";
+import type { Post as PostType } from "../types/posts";
+
+export const prerender = false;
+
+const user = {
+  image:
+    "https://scontent.fbio3-2.fna.fbcdn.net/v/t1.18169-9/10687094_1484436165140607_3166086851861933286_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=be3454&_nc_ohc=Aff6_7PqigcAX-97lGn&_nc_ht=scontent.fbio3-2.fna&oh=00_AfCEkN5U0PekM__u-yO_baFp6Mt6M6W77CFICqc_YrOheA&oe=654EAEAD",
+  name: "Manuel Antón",
+};
+
+const posts: PostType[] = [
+  {
+    id: 1,
+    user,
+    created_at: new Date("2023-10-12"),
+    body: {
+      text: "Me gusta más que el facebook original",
+      image: "/img/ai-palace.png",
+    },
+  },
+  {
+    id: 0,
+    user,
+    created_at: new Date("2023-10-10"),
+    body: {
+      text: "Hello, world! First Facebook post.",
+    },
+  },
+  
+];
 ---
 
-
 <Layout title="Facebook">
-	<main class="flex place-content-center">
-		<NewPost />
-	</main>
+  <main class="flex w-3/5">
+    <PostList client:load user={user} posts={posts} />
+  </main>
 </Layout>
-
-<style>
-</style>
