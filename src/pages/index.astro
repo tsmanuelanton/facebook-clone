@@ -6,8 +6,7 @@ import type { Post as PostType } from "../types/posts";
 export const prerender = false;
 
 const user = {
-  image:
-    "https://scontent.fbio3-2.fna.fbcdn.net/v/t1.18169-9/10687094_1484436165140607_3166086851861933286_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=be3454&_nc_ohc=Aff6_7PqigcAX-97lGn&_nc_ht=scontent.fbio3-2.fna&oh=00_AfCEkN5U0PekM__u-yO_baFp6Mt6M6W77CFICqc_YrOheA&oe=654EAEAD",
+  image: "/img/minions.jpg",
   name: "Manuel Antón",
 };
 
@@ -29,12 +28,13 @@ const posts: PostType[] = [
       text: "Hello, world! First Facebook post.",
     },
   },
-  
 ];
 ---
 
 <Layout title="Facebook">
-  <main class="flex w-3/5">
-    <PostList client:load user={user} posts={posts} />
-  </main>
+  <div class="flex place-content-center">
+    <main class="w-3/5">
+      <PostList client:load user={user} posts={posts} />
+    </main>
+  </div>
 </Layout>

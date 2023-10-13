@@ -52,7 +52,7 @@ const NewPost = ({
         <button className="inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200">
           <img
             className="mr-2"
-            src="https://static.xx.fbcdn.net/rsrc.php/v3/yr/r/c0dWho49-X3.png"
+            src="/img/live-video.png"
           />
           Video en directo
         </button>
@@ -60,7 +60,7 @@ const NewPost = ({
         <button className="inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200">
           <img
             className="mr-2"
-            src="https://static.xx.fbcdn.net/rsrc.php/v3/y7/r/Ivw7nhRtXyo.png"
+            src="/img/images.png"
           />
           Foto/video
         </button>
@@ -68,7 +68,7 @@ const NewPost = ({
         <button className="inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200">
           <img
             className="mr-2"
-            src="https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Y4mYLVOhTwq.png"
+            src="/img/happy-face.png"
           />
           Sentimiento/actividad
         </button>
