@@ -1,25 +1,20 @@
 import { useState, type FormEvent } from "react";
-import type { Post } from "../types/posts";
+import type { PostBody } from "../types/posts";
 import type { User } from "../types/user";
+import Button from "./Button";
 
 const NewPost = ({
   user,
   addPost,
 }: {
   user: User;
-  addPost: (post: Post) => void;
+  addPost: (post: PostBody) => void;
 }) => {
   const [text, setText] = useState<string>("");
 
   const postAction = (e: FormEvent<HTMLFormElement>) => {
-    if (text) {
-      addPost({
-        id: 0,
-        user,
-        created_at: new Date(),
-        body: { text },
-      });
-    }
+    if (text) addPost({ text });
+
     e.preventDefault();
   };
 
@@ -39,39 +34,30 @@ const NewPost = ({
             type="text"
             placeholder={`¿Que estás pensando, ${user.name}?`}
           />
-          <button
+          <Button
             type="submit"
             title="Publicar"
             className="p-2 border-2 rounded-md border-indigo-400"
           >
             Publicar
-          </button>
+          </Button>
         </form>
       </div>
       <div className="flex justify-between pt-2 font-medium text-gray-500">
-        <button className="inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200">
-          <img
-            className="mr-2"
-            src="/img/live-video.png"
-          />
+        <Button>
+          <img className="mr-2" src="/img/live-video.png" />
           Video en directo
-        </button>
+        </Button>
 
-        <button className="inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200">
-          <img
-            className="mr-2"
-            src="/img/images.png"
-          />
+        <Button>
+          <img className="mr-2" src="/img/images.png" />
           Foto/video
-        </button>
+        </Button>
 
-        <button className="inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200">
-          <img
-            className="mr-2"
-            src="/img/happy-face.png"
-          />
+        <Button>
+          <img className="mr-2" src="/img/happy-face.png" />
           Sentimiento/actividad
-        </button>
+        </Button>
       </div>
     </div>
   );

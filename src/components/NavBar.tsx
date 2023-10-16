@@ -3,24 +3,24 @@ const NavBar = () => {
   return (
     <div className="flex justify-between sticky top-0 bg-white h-14 shadow-sm">
       <div className="w-1/5 self-center mx-2">
-        <FacebookIcon />
+        <FacebookIcon className="w-7" />
       </div>
       <div className="flex w-3/5 place-content-center font-medium text-gray-500 gap-2 mt-2">
         <a className="group inline-flex w-32 place-content-center text-blue-600  border-b-4 border-blue-600">
-          <HomeIcon />
+          <HomeIcon className="w-7" />
           <span className="invisible group-hover:visible absolute top-16 bg-gray-700 p-2 rounded-md text-white text-xs">
             Inicio
           </span>
         </a>
 
         <a className="group inline-flex w-32 place-content-center rounded-md border-b-4 border-white hover:bg-gray-200">
-          <UsersIcon />
+          <UsersIcon className="w-7" />
           <span className="invisible group-hover:visible absolute top-16 bg-gray-700 p-2 rounded-md text-white text-xs">
             Amigos
           </span>
         </a>
         <a className="group inline-flex w-32 place-content-center rounded-md border-b-4 border-white hover:bg-gray-200">
-          <VideosIcon />
+          <VideosIcon className="w-7" />
           <span className="invisible group-hover:visible absolute top-16 bg-gray-700 p-2 rounded-md text-white text-xs">
             Vídeo
           </span>

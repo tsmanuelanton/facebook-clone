@@ -5,27 +5,54 @@ import type { Post as PostType } from "../types/posts";
 
 export const prerender = false;
 
-const user = {
+const userManu = {
+  id: crypto.randomUUID(),
   image: "/img/minions.jpg",
   name: "Manuel Antón",
 };
 
+const userMilo = {
+  id: crypto.randomUUID(),
+  image: "/img/koala.jpg",
+  name: "Milo",
+};
+
 const posts: PostType[] = [
   {
-    id: 1,
-    user,
+    id: crypto.randomUUID(),
+    user: userManu,
     created_at: new Date("2023-10-12"),
     body: {
       text: "Me gusta más que el facebook original",
       image: "/img/ai-palace.png",
     },
+    feedback: {
+      likes: [userMilo],
+      comments: [
+        {
+          id: crypto.randomUUID(),
+          user: userManu,
+          text: "A mí también aunque no te sorprenda.",
+          created_at : new Date("2023-10-12")
+        },{
+          id: crypto.randomUUID(),
+          user: userMilo,
+          text: "Que imagen más chula.",
+          created_at : new Date("2023-10-13")
+        }
+      ],
+    },
   },
   {
-    id: 0,
-    user,
+    id: crypto.randomUUID(),
+    user: userMilo,
     created_at: new Date("2023-10-10"),
     body: {
       text: "Hello, world! First Facebook post.",
+    },
+    feedback: {
+      comments: [],
+      likes: [],
     },
   },
 ];
@@ -34,7 +61,7 @@ const posts: PostType[] = [
 <Layout title="Facebook">
   <div class="flex place-content-center">
     <main class="w-3/5">
-      <PostList client:load user={user} posts={posts} />
+      <PostList client:load user={userManu} posts={posts} />
     </main>
   </div>
 </Layout>
