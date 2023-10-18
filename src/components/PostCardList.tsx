@@ -17,17 +17,17 @@ const Posts = ({
   const [posts, setPosts] = useState(initialPosts);
   const addPost = (body: PostBodyType) => {
     const post: PostType = {
-      id: 0,
+      id: crypto.randomUUID(),
       user,
       created_at: new Date(),
       body,
       feedback: { likes: [], comments: [] },
     };
-    setPosts([{ ...post, id: posts.length + 1 }].concat(posts));
+    setPosts([post].concat(posts));
   };
 
   return (
-    <div className="my-4 flex flex-col place-items-center space-y-4 w-full ">
+    <div className="flex flex-col place-items-center space-y-4 w-full ">
       <NewPostCard user={user} addPost={addPost} />
       {posts.map((post) => (
         <PostCard key={post.id} post={post} user={user} />

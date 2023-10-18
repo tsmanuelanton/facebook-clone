@@ -1,16 +1,12 @@
 import type { Post as PostType } from "../types/posts";
 import { useEffect, useState } from "react";
 import getTimeAgo from "../utils/TimeAgo";
-import {
-  CommentIcon,
-  LikeIcon,
-  LikeIconSolid,
-  ShareIcon,
-} from "../utils/icons";
 import type { User } from "../types/user";
 import { isEqual } from "lodash";
 import Button from "./Button";
 import CommentSection from "./CommentSection";
+import { ChatBubbleLeftIcon, HandThumbUpIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
 
 const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   const [timeAgo, setTimeAgo] = useState(getTimeAgo(post.created_at));
@@ -47,7 +43,7 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   };
 
   return (
-    <div className="rounded-md shadow-md w-2/3 p-3 divide-y-2 space-y-4 bg-white ">
+    <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
       <div className="flex space-x-2">
         <img
           className="w-12 rounded-full"
@@ -66,7 +62,7 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
           <div className="grid grid-cols-2 mx-2">
             {likes.length > 0 && (
               <div className="inline-flex col-end-1 gap-2">
-                <LikeIconSolid className="w-6 p-1 rounded-full bg-blue-600 text-white" />
+                <HandThumbUpIconSolid className="w-6 p-1 rounded-full bg-blue-600 text-white" />
                 <p> {likes.length}</p>
               </div>
             )}
@@ -82,14 +78,14 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
       <div className="flex justify-between pt-2 font-medium text-gray-500">
         <Button onClick={handleLikeBtn}>
           {postLiked ? (
-            <LikeIconSolid className="w-6 text-blue-600" />
+            <HandThumbUpIconSolid className="w-6 text-blue-600" />
           ) : (
-            <LikeIcon className="w-6" />
+            <HandThumbUpIcon className="w-6" />
           )}
           Me gusta
         </Button>
         <Button onClick={() => setVisibleComments(!visibleComments)}>
-          <CommentIcon className="w-6" />
+          <ChatBubbleLeftIcon className="w-6" />
           Comentar
         </Button>
         <Button>

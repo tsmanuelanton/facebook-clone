@@ -19,7 +19,7 @@ const NewPost = ({
   };
 
   return (
-    <div className="rounded-md shadow-md w-2/3 p-3 divide-y-2 space-y-4 bg-white">
+    <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
       <div className="flex space-x-2">
         <img
           className="w-12 rounded-full"
