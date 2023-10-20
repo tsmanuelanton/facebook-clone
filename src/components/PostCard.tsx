@@ -2,7 +2,7 @@ import type { Post as PostType } from "../types/posts";
 import { useEffect, useState } from "react";
 import getTimeAgo from "../utils/TimeAgo";
 import type { User } from "../types/user";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 import Button from "./Button";
 import CommentSection from "./CommentSection";
 import { ChatBubbleLeftIcon, HandThumbUpIcon, ShareIcon } from "@heroicons/react/24/outline";
