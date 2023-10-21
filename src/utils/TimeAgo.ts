@@ -9,8 +9,8 @@ const DATE_UNITS = {
   minute: 60,
 };
 
-const getTimeAgo = (date: Date) => {
-  const deltaSeconds = Math.round((Date.now() - date.getTime()) / 1000);
+const getTimeAgo = (dateArg: Date | string) => {
+  const deltaSeconds = Math.round((Date.now() - new Date(dateArg).getTime()) / 1000);
 
   let timeAgo = "";
   for (const [unit, secondsInUnit] of Object.entries(DATE_UNITS)) {
