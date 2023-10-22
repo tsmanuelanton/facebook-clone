@@ -5,6 +5,18 @@ import { users } from "./users";
 export const posts: Post[] = [
   {
     id: "0",
+    user: users[1],
+    created_at: new Date("2023-10-10"),
+    body: {
+      text: "Hello, world! First Facebook post.",
+    },
+    feedback: {
+      comments: [],
+      likes: [],
+    },
+  },
+  {
+    id: "1",
     user: users[0],
     created_at: new Date("2023-10-12"),
     body: {
@@ -27,18 +39,6 @@ export const posts: Post[] = [
           created_at: new Date("2023-10-13"),
         },
       ],
-    },
-  },
-  {
-    id: "1",
-    user: users[1],
-    created_at: new Date("2023-10-10"),
-    body: {
-      text: "Hello, world! First Facebook post.",
-    },
-    feedback: {
-      comments: [],
-      likes: [],
     },
   },
 ];

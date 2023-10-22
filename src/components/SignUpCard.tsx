@@ -1,17 +1,21 @@
 import { useState, type FormEvent } from "react";
 
 const LoginCard = () => {
+  const [name, setName] = useState<string>();
+  const [surname, setSurname] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [failed, setFailed] = useState(false);
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { protocol, host } = window.location;
     const baseUrl = protocol + "//" + host;
-    const res = await fetch(`${baseUrl}/api/login`, {
+    const res = await fetch(`${baseUrl}/api/signup`, {
       method: "POST",
       body: JSON.stringify({
+        name,
+        surname,
         email,
         password,
       }),
@@ -23,8 +27,29 @@ const LoginCard = () => {
 
   return (
     <div className="flex flex-col w-1/3 rounded-md  bg-white shadow-lg p-4 text-lg divide-y-2 space-y-4">
-      <form onSubmit={(e) => handleLogin(e)} className="flex flex-col gap-3">
+      <form onSubmit={(e) => handleSignUp(e)} className="flex flex-col gap-3">
         <h1 className="text-4xl font-bold text-blue-600">facebook</h1>
+        <h2 className="">Es rápido y fácil</h2>
+        <label title="name">
+          <input
+            type="text"
+            value={name}
+            onChange={({ target }) => setName(target.value)}
+            required={true}
+            className="w-full border rounded-md p-3"
+            placeholder="Nombre"
+          />
+        </label>
+        <label title="surname">
+          <input
+            type="text"
+            value={surname}
+            onChange={({ target }) => setSurname(target.value)}
+            required={true}
+            className="w-full border rounded-md p-3"
+            placeholder="Apellido"
+          />
+        </label>
         <label title="Email">
           <input
             type="email"
@@ -48,18 +73,21 @@ const LoginCard = () => {
         </label>
         {failed && (
           <p className="text-sm text-red-500">
-            Correo o contraseña incorrectos
+            Ya existe una cuenta para {email}
           </p>
         )}
 
-        <button className="w-full p-3 border rounded-md bg-blue-500 text-white font-medium hover:bg-blue-600">
-          Iniciar sesión
+        <button className="w-full p-3 border rounded-md bg-green-500 text-white font-medium hover:bg-green-600">
+          Registrarte
         </button>
       </form>
       <div className="flex place-content-center pt-4">
-        <a href="/signup" className="w-fit p-3 border rounded-md bg-green-500 text-white font-medium hover:bg-green-600">
-          Crear cuenta nueva
-        </a>
+        <p>
+          ¿Ya tienes cuenta?{" "}
+          <a href="/login" className="text-blue-600">
+            Iniciar sesión
+          </a>
+        </p>
       </div>
     </div>
   );

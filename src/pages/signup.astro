@@ -1,15 +1,18 @@
 ---
-import LoginCard from "@/components/LoginCard";
 import Layout from "../layouts/Layout.astro";
+import SignUpCard from "@/components/SignUpCard";
 export const prerender = false;
 
-if (Astro.cookies.get("loggedUser")) return Astro.redirect("/");
+if (Astro.cookies.get("loggedUser"))
+  return Astro.redirect("/")
 ---
 
 <Layout title="Facebook" navbarHidden={true}>
   <div class="flex place-content-center p-4 h-screen">
+    <div class="w-1/5"></div>
     <main class="flex place-content-center w-3/5 items-center mb-60">
-      <LoginCard client:load />
+      <SignUpCard client:load />
     </main>
+    <div class="w-1/5"></div>
   </div>
 </Layout>

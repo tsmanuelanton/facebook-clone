@@ -23,26 +23,28 @@ const Posts = ({ user, posts: initialPosts }: Props) => {
       body,
       feedback: { likes: [], comments: [] },
     };
-    const {protocol, host} = window.location;
-    const baseUrl = `${protocol}//${host}`
-    
+    const { protocol, host } = window.location;
+    const baseUrl = `${protocol}//${host}`;
+
     // setPosts([post].concat(posts));
     await fetch(baseUrl + "/api/posts", {
       method: "POST",
       body: JSON.stringify(post),
     }).catch(console.error);
 
-    const res = await fetch(baseUrl + "/api/posts")
-    const posts = await res.json()
-    setPosts(posts)
+    const res = await fetch(baseUrl + "/api/posts");
+    const posts = await res.json();
+    setPosts(posts);
   };
 
   return (
-    <div className="flex flex-col place-items-center space-y-4 w-full ">
+    <div className="flex flex-col">
       <NewPostCard user={user} addPost={addPost} />
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} user={user} />
-      ))}
+      <div className="flex flex-col-reverse space-y-4">
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} user={user} />
+        ))}
+      </div>
     </div>
   );
 };
