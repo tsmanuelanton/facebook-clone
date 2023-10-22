@@ -1,29 +1,35 @@
 ---
-import NavBar from '../components/NavBar';
+import NavBar from "../components/NavBar";
+import { ViewTransitions } from "astro:transitions";
 interface Props {
-	title: string;
+  title: string;
+  navbarHidden?: boolean;
 }
-const { title } = Astro.props;
-const url = Astro.url
+const { title, navbarHidden } = Astro.props;
+const url = Astro.url;
+const {origin} = Astro.url
+const loggedUserId = Astro.cookies.get("loggedUser")?.value
+const user = await fetch(`${origin}/api/users?id=${loggedUserId}`).then(res => res.json())
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Facebook clone for leaning purposes" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<NavBar currentUrl={url}/>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Facebook clone for leaning purposes" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    {!navbarHidden && <NavBar client:load currentUrl={url} user={user}/>}
+
+    <slot />
+  </body><style is:global>
+    html {
+      background-color: #f0f2f5;
+    }
+  </style>
 </html>
-<style is:global>
-	html {
-		background-color: #f0f2f5;
-	}
-</style>

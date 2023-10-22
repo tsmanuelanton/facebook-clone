@@ -2,12 +2,14 @@ import { useState, type FormEvent } from "react";
 import type { PostComment as PostCommentType } from "../types/posts";
 import Button from "./Button";
 import getTimeAgo from "../utils/TimeAgo";
+import type { User } from "@/types/user";
 
 type Props = {
   comments: PostCommentType[];
+  user: User
 };
 
-const CommentSection = ({ comments: postComments }: Props) => {
+const CommentSection = ({ comments: postComments, user }: Props) => {
   const [comments, setComments] = useState(postComments);
   const [text, setText] = useState<string>("");
 
@@ -15,11 +17,7 @@ const CommentSection = ({ comments: postComments }: Props) => {
     setComments(
       comments.concat({
         id: crypto.randomUUID(),
-        user: {
-          id: crypto.randomUUID(),
-          image: "/img/minions.jpg",
-          name: "Manuel Antón",
-        },
+        user,
         text,
         created_at: new Date()
       })

@@ -93,7 +93,7 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
           Compartir
         </Button>
       </div>
-      {visibleComments && <CommentSection comments={post.feedback.comments} />}
+      {visibleComments && <CommentSection user={user} comments={post.feedback.comments} />}
     </div>
   );
 };

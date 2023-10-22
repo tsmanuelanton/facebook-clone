@@ -4,19 +4,23 @@ import PostList from "../components/PostCardList";
 import LeftNavBar from "../components/LeftNavBar";
 export const prerender = false;
 
-const APIUrl = Astro.url.protocol + "//" + Astro.url.host
-const userManu = await fetch(`${APIUrl}/api/users?id=0`).then(res => res.json()).then(a => {console.log(a); return a})
-const posts = await fetch(`${APIUrl}/api/posts`).then(res => res.json())
+const loggedUserId = Astro.cookies.get("loggedUser")?.value
+if (!loggedUserId)
+  return Astro.redirect("/login")
+
+const {origin} = Astro.url
+const user = await fetch(`${origin}/api/users?id=${loggedUserId}`).then(res => res.json())
+const posts = await fetch(`${origin}/api/posts`).then(res => res.json())
 ---
 
 <Layout title="Facebook">
   <div class="flex place-content-center p-4">
     <div class="w-1/5">
-      <LeftNavBar user={userManu}/>
+      <LeftNavBar user={user}/>
     </div>
     <main class="flex place-content-center w-3/5">
       <div class="w-2/3">
-        <PostList client:load user={userManu} posts={posts} />
+        <PostList client:load user={user} posts={posts} />
       </div>
     </main>
     <div class="w-1/5">

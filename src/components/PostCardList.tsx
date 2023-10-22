@@ -7,15 +7,15 @@ import type { User } from "../types/user";
 import NewPostCard from "./NewPostCard";
 import PostCard from "./PostCard";
 
-const Posts = ({
-  user,
-  posts: initialPosts,
-}: {
+type Props = {
   user: User;
   posts: PostType[];
-}) => {
+};
+
+const Posts = ({ user, posts: initialPosts }: Props) => {
   const [posts, setPosts] = useState(initialPosts);
-  const addPost = (body: PostBodyType) => {
+
+  const addPost = async (body: PostBodyType) => {
     const post: PostType = {
       id: crypto.randomUUID(),
       user,
@@ -23,7 +23,18 @@ const Posts = ({
       body,
       feedback: { likes: [], comments: [] },
     };
-    setPosts([post].concat(posts));
+    const {protocol, host} = window.location;
+    const baseUrl = `${protocol}//${host}`
+    
+    // setPosts([post].concat(posts));
+    await fetch(baseUrl + "/api/posts", {
+      method: "POST",
+      body: JSON.stringify(post),
+    }).catch(console.error);
+
+    const res = await fetch(baseUrl + "/api/posts")
+    const posts = await res.json()
+    setPosts(posts)
   };
 
   return (

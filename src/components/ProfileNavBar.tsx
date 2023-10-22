@@ -26,8 +26,8 @@ const ProfileNavBar = () => {
     <div className="flex place-content-center bg-white shadow-sm sticky top-14 z-30">
       <div className="w-4/6 px-8 border-t-2">
         <div className="flex font-medium text-gray-500">
-          {paths.map((path) => (
-            <div className="relative">
+          {paths.map((path, i) => (
+            <div key={i} className="relative">
               <a
                 href={path.url}
                 className={`${

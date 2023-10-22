@@ -55,3 +55,22 @@ export const GET: APIRoute = async ({ url }) => {
     headers: { "content-type": "application/json" },
   });
 };
+
+export const POST: APIRoute = async ({ request }) => {
+  const post = await request.json();
+  let body, options;
+
+  if (post != undefined) {
+    posts.push(post);
+    body = JSON.stringify({ res: "Post uploaded successfully" });
+    options = {
+      headers: { "content-type": "application/json" },
+    };
+  } else {
+    body = null;
+    options = {
+      status: 400,
+    };
+  }
+  return new Response(body, options);
+};
