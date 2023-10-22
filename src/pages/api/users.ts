@@ -4,17 +4,19 @@ import type { User } from "../../types/user";
 export const users: User[] = [
   {
     id: "0",
-    email:"user0@email.com",
+    email: "user0@email.com",
     image: "/img/minions.jpg",
     name: "Manuel Antón",
-    password: "pass0"
+    password: "pass0",
+    friends: ["1"],
   },
   {
     id: "1",
-    email:"user1@email.com",
+    email: "user1@email.com",
     image: "/img/koala.jpg",
     name: "Milo",
-    password: "pass1"
+    password: "pass1",
+    friends: ["0"],
   },
 ];
 
@@ -39,15 +41,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     // check email is not already registred
-    if (users.some(user => user.email === newUser.email)){
+    if (users.some((user) => user.email === newUser.email)) {
       body = JSON.stringify({ res: "Email already registred, try to log in." });
       options = {
         headers: { "content-type": "application/json" },
       };
-      
-    }else {
+    } else {
       // save user
-      users.push({...newUser, id: users.length});
+      users.push({ ...newUser, id: users.length });
       body = JSON.stringify({ res: "User registred successfully" });
       options = {
         headers: { "content-type": "application/json" },
@@ -58,9 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
     options = {
       status: 500,
     };
-
   } finally {
     return new Response(body, options);
   }
-
 };

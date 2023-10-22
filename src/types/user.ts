@@ -3,5 +3,6 @@ export type User = {
   image: string;
   name: string;
   email: string;
-  password: string
+  password: string,
+  friends: string[]
 };

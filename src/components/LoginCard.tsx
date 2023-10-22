@@ -16,7 +16,7 @@ const LoginCard = () => {
         password,
       }),
     });
-    if (res.ok) window.location.href = window.location.origin + "/";
+    if (res.ok) import("astro:transitions/client").then(({ navigate }) => navigate("/"));
     else setFailed(true);
   };
 

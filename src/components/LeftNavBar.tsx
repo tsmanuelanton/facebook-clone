@@ -1,5 +1,4 @@
 import type { User } from "../types/user";
-import Button from "./Button";
 
 const LeftNavBar = ({ user }: { user: User }) => {
   return (

@@ -11,9 +11,12 @@ import { useState } from "react";
 const handleLogout = () => {
   const { protocol, host } = window.location;
   const baseUrl = protocol + "//" + host;
+
   fetch(baseUrl + "/api/logout", {
     method: "POST",
-  }).then((res) => res.redirected && window.location.replace(res.url));
+  }).then((res) =>
+    import("astro:transitions/client").then(({ navigate }) => navigate(res.url))
+  );
 };
 
 type Props = {

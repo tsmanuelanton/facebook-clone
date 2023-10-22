@@ -8,13 +8,20 @@ import ProfileNavBar from "../components/ProfileNavBar";
 export const prerender = false;
 
 const loggedUserId = Astro.cookies.get("loggedUser")?.value
-const {origin} = Astro.url
-const user = await fetch(`${origin}/api/users?id=${loggedUserId}`).then(res => res.json())
+const {origin, searchParams} = Astro.url
+
+const userLogged = await fetch(`${origin}/api/users?id=${loggedUserId}`).then(res => res.json())
+let userProfile = userLogged;
+if (searchParams.get("id")) {
+  const userVisited = await fetch(`${origin}/api/users?id=${searchParams.get("id")}`).then(res => res.ok && res.json())
+  if (userVisited)
+    userProfile = userVisited;
+}
 const posts = await fetch(`${origin}/api/posts`).then(res => res.json())
 ---
 
 <Layout title="Facebook">
-  <ProfileHeader user={user} />
+  <ProfileHeader user={userProfile} />
   <ProfileNavBar/>
   <main class="flex place-content-center">
     <div class="w-4/6 py-4 px-8">
@@ -23,7 +30,7 @@ const posts = await fetch(`${origin}/api/posts`).then(res => res.json())
           <UserDetailsCard />
         </div>
         <div class="w-3/5">
-          <PostList client:load user={user} posts={posts} />
+          <PostList client:load user={userLogged} posts={posts} />
         </div>
       </div>
     </div>
