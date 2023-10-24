@@ -6,10 +6,12 @@ interface Props {
   navbarHidden?: boolean;
 }
 const { title, navbarHidden } = Astro.props;
-const url = Astro.url;
-const {origin} = Astro.url
-const loggedUserId = Astro.cookies.get("loggedUser")?.value
-const user = await fetch(`${origin}/api/users?id=${loggedUserId}`).then(res => res.json())
+const {url, cookies} = Astro;
+
+let user;
+const loggedUserId = cookies.get("loggedUser")?.value;
+if (loggedUserId)
+  user = await fetch(`${url.origin}/api/users?id=${loggedUserId}`).then((res) => res.json());
 ---
 
 <!doctype html>
@@ -24,12 +26,13 @@ const user = await fetch(`${origin}/api/users?id=${loggedUserId}`).then(res => r
     <ViewTransitions />
   </head>
   <body>
-    {!navbarHidden && <NavBar client:load currentUrl={url} user={user}/>}
+    {!navbarHidden && <NavBar client:load currentUrl={url} user={user} />}
 
     <slot />
-  </body><style is:global>
-    html {
-      background-color: #f0f2f5;
-    }
-  </style>
+    <style is:global>
+      html {
+        background-color: #f0f2f5;
+      }
+    </style>
+  </body>
 </html>

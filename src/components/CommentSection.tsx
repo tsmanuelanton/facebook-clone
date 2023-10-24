@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useEffect} from "react";
 import type { PostComment as PostCommentType } from "../types/posts";
 import Button from "./Button";
 import getTimeAgo from "../utils/TimeAgo";
@@ -6,48 +6,30 @@ import type { User } from "@/types/user";
 
 type Props = {
   comments: PostCommentType[];
-  user: User
+  user: User;
 };
 
 const CommentSection = ({ comments: postComments, user }: Props) => {
   const [comments, setComments] = useState(postComments);
   const [text, setText] = useState<string>("");
-
   const handleCommentBtn = (event: FormEvent<HTMLFormElement>) => {
     setComments(
       comments.concat({
         id: crypto.randomUUID(),
-        user,
+        userID: user.id,
         text,
-        created_at: new Date()
+        created_at: new Date(),
       })
     );
-    setText("")
-      event.preventDefault()
+    setText("");
+    event.preventDefault();
   };
 
   return (
     <div>
       <div className="max-h-80 overflow-y-scroll">
         {comments?.map((comment) => (
-          <div key={comment.id} className="flex m-2 gap-2 mr-10">
-            <div className="flex-none w-8 p-0 m-0">
-              <img
-                className="rounded-full w-8"
-                src={comment.user.image}
-                alt="Profile image"
-              />
-            </div>
-
-          <div>
-            <div className=" bg-gray-200 rounded-3xl p-2 px-3">
-              <p className="font-medium">{comment.user.name}</p>
-              <p className="break-all">{comment.text}</p>
-            </div>
-            <p className="flex justify-end text-xs text-gray-500">{getTimeAgo(comment.created_at)}</p>
-          </div>
-
-          </div>
+          <Comment key={comment.id} comment={comment} />
         ))}
       </div>
 
@@ -55,10 +37,13 @@ const CommentSection = ({ comments: postComments, user }: Props) => {
         <div className="flex space-x-2">
           <img
             className="w-12 rounded-full"
-            src="/img/minions.jpg"
+            src={user.image}
             alt="Profile image"
           />
-          <form onSubmit={(e) => handleCommentBtn(e)} className="flex w-full gap-2">
+          <form
+            onSubmit={(e) => handleCommentBtn(e)}
+            className="flex w-full gap-2"
+          >
             <input
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -81,3 +66,34 @@ const CommentSection = ({ comments: postComments, user }: Props) => {
 };
 
 export default CommentSection;
+
+const Comment = ({ comment }: { comment: PostCommentType }) => {
+  const [user, setUser] = useState<User>();
+  useEffect(() => {
+    fetch(`${window.location.origin}/api/users?id=${comment.userID}`)
+      .then((res) => res.json())
+      .then((user) => setUser(user));
+  }, []);
+
+  return (
+    <div key={comment.id} className="flex m-2 gap-2 mr-10">
+      <div className="flex-none w-8 p-0 m-0">
+        <img
+          className="rounded-full w-8"
+          src={user?.image}
+          alt="Profile image"
+        />
+      </div>
+
+      <div>
+        <div className=" bg-gray-200 rounded-3xl p-2 px-3">
+          <p className="font-medium">{user?.name}</p>
+          <p className="break-all">{comment.text}</p>
+        </div>
+        <p className="flex justify-end text-xs text-gray-500">
+          {getTimeAgo(comment.created_at)}
+        </p>
+      </div>
+    </div>
+  );
+};

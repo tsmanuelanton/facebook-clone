@@ -1,12 +1,10 @@
-import type { User } from "./user";
-
 export type Post = {
   id: string;
-  user: User;
+  userID: string;
   created_at: Date;
   body: PostBody;
   feedback: {
-    likes: User[];
+    likes: string[];
     comments: PostComment[];
   };
 };
@@ -18,7 +16,7 @@ export type PostBody = {
 
 export type PostComment = {
   id: string;
-  user: User;
+  userID: string;
   text: string;
   created_at: Date;
 }

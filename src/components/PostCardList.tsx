@@ -2,6 +2,7 @@ import { useState } from "react";
 import type {
   Post as PostType,
   PostBody as PostBodyType,
+  Post,
 } from "../types/posts";
 import type { User } from "../types/user";
 import NewPostCard from "./NewPostCard";
@@ -13,16 +14,17 @@ type Props = {
 };
 
 const Posts = ({ user, posts: initialPosts }: Props) => {
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
 
   const addPost = async (body: PostBodyType) => {
     const post: PostType = {
       id: crypto.randomUUID(),
-      user,
+      userID: user.id,
       created_at: new Date(),
       body,
       feedback: { likes: [], comments: [] },
     };
+
     const { protocol, host } = window.location;
     const baseUrl = `${protocol}//${host}`;
 
@@ -33,14 +35,17 @@ const Posts = ({ user, posts: initialPosts }: Props) => {
     }).catch(console.error);
 
     const res = await fetch(baseUrl + "/api/posts");
-    const posts = await res.json();
-    setPosts(posts);
+
+    if (res.ok){
+      const newPosts : Post[] = await res.json();
+      setPosts(newPosts);
+    }
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-4">
       <NewPostCard user={user} addPost={addPost} />
-      <div className="flex flex-col-reverse space-y-4">
+      <div className="flex flex-col space-y-4">
         {posts.map((post) => (
           <PostCard key={post.id} post={post} user={user} />
         ))}

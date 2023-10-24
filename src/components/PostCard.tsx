@@ -5,7 +5,11 @@ import type { User } from "../types/user";
 import isEqual from "lodash/isEqual";
 import Button from "./Button";
 import CommentSection from "./CommentSection";
-import { ChatBubbleLeftIcon, HandThumbUpIcon, ShareIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleLeftIcon,
+  HandThumbUpIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
 import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
 
 const PostCard = ({ post, user }: { post: PostType; user: User }) => {
@@ -17,8 +21,16 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
     })
   );
   const [visibleComments, setVisibleComments] = useState(false);
+  const [postOwner, setPostOwner] = useState<User>();
 
   useEffect(() => {
+    const { protocol, host } = window.location;
+    const baseUrl = protocol + "//" + host;
+    fetch(`${baseUrl}/api/users?id=${post.userID}`)
+      .then((res) => res.json())
+      .then((postOwner) => setPostOwner(postOwner))
+      .catch(console.error);
+
     const intervalID = setInterval(
       () => setTimeAgo(getTimeAgo(post.created_at)),
       1000 * 60
@@ -28,12 +40,10 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   }, []);
 
   const handleLikeBtn = () => {
-    let currentUserIndex = likes.findIndex((element) => {
-      return isEqual(element, user);
-    });
+    let currentUserIndex = likes.findIndex((userId) => userId === user.id);
 
     if (currentUserIndex === -1) {
-      setLikes(likes.concat(user));
+      setLikes(likes.concat(user.id));
       setPostLiked(true);
     } else {
       likes.splice(currentUserIndex, 1);
@@ -47,11 +57,11 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
       <div className="flex space-x-2">
         <img
           className="w-12 rounded-full"
-          src={post.user.image}
+          src={postOwner?.image}
           alt="Profile image"
         />
         <div>
-          <p className="font-medium">{post.user.name}</p>
+          <p className="font-medium">{postOwner?.name}</p>
           <p className="text-sm font-medium text-gray-500">{timeAgo}</p>
         </div>
       </div>
@@ -93,7 +103,9 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
           Compartir
         </Button>
       </div>
-      {visibleComments && <CommentSection user={user} comments={post.feedback.comments} />}
+      {visibleComments && (
+        <CommentSection user={user} comments={post.feedback.comments} />
+      )}
     </div>
   );
 };

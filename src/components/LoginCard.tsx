@@ -7,9 +7,7 @@ const LoginCard = () => {
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { protocol, host } = window.location;
-    const baseUrl = protocol + "//" + host;
-    const res = await fetch(`${baseUrl}/api/login`, {
+    const res = await fetch(`${window.location.origin}/api/login`, {
       method: "POST",
       body: JSON.stringify({
         email,

@@ -1,28 +1,10 @@
 import type { APIRoute } from "astro";
-import type { User } from "../../types/user";
-
-export const users: User[] = [
-  {
-    id: "0",
-    email: "user0@email.com",
-    image: "/img/minions.jpg",
-    name: "Manuel Antón",
-    password: "pass0",
-    friends: ["1"],
-  },
-  {
-    id: "1",
-    email: "user1@email.com",
-    image: "/img/koala.jpg",
-    name: "Milo",
-    password: "pass1",
-    friends: ["0"],
-  },
-];
+import { getUsers, getUser, addUser } from "@/lib/firebase/firestore/users";
 
 export const GET: APIRoute = async ({ url }) => {
+
   const id = url.searchParams.get("id");
-  const json = id ? users.at(+id) : users;
+  const json = id ? await getUser(id) : await getUsers();
 
   if (json == undefined) {
     return new Response(null, {
@@ -40,6 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
   let body, options;
 
   try {
+    const users  = await getUsers()
     // check email is not already registred
     if (users.some((user) => user.email === newUser.email)) {
       body = JSON.stringify({ res: "Email already registred, try to log in." });
@@ -48,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
       };
     } else {
       // save user
-      users.push({ ...newUser, id: users.length });
+      addUser(newUser)
       body = JSON.stringify({ res: "User registred successfully" });
       options = {
         headers: { "content-type": "application/json" },
