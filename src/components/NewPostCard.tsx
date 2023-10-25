@@ -1,21 +1,51 @@
-import { useState, type FormEvent } from "react";
+"use client";
+
+import type {
+  Post as PostType,
+  PostBody as PostBodyType,
+  Post,
+} from "../types/posts";import { useState, type FormEvent } from "react";
 import type { PostBody } from "../types/posts";
 import type { User } from "../types/user";
 import Button from "./Button";
+import { useRouter } from "next/navigation";
 
-const NewPost = ({
-  user,
-  addPost,
-}: {
-  user: User;
-  addPost: (post: PostBody) => void;
-}) => {
+const NewPost = ({ user }: { user: User }) => {
   const [text, setText] = useState<string>("");
+  const router = useRouter();
 
   const postAction = (e: FormEvent<HTMLFormElement>) => {
     if (text) addPost({ text });
 
     e.preventDefault();
+  };
+
+  const addPost = async (body: PostBodyType) => {
+    const post: PostType = {
+      id: crypto.randomUUID(),
+      userID: user.id,
+      created_at: new Date(),
+      body,
+      feedback: { likes: [], comments: [] },
+    };
+
+    const { protocol, host } = window.location;
+    const baseUrl = `${protocol}//${host}`;
+
+    // setPosts([post].concat(posts));
+    await fetch(baseUrl + "/api/posts", {
+      method: "POST",
+      body: JSON.stringify(post),
+    }).catch(console.error);
+
+    router.refresh()
+
+  //   const res = await fetch(baseUrl + "/api/posts");
+
+  //   if (res.ok) {
+  //     const newPosts: Post[] = await res.json();
+  //     setPosts(newPosts);
+  //   }
   };
 
   return (

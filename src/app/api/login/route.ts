@@ -1,8 +1,9 @@
 import { getUsers } from "@/lib/firebase/firestore/users";
 import type { User } from "@/types/user";
-import type { APIRoute } from "astro";
+import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
-export const POST: APIRoute = async ({ request, cookies, redirect }) => {
+export const POST = async (request: NextRequest) => {
   const input = await request.json();
 
   let body,
@@ -17,11 +18,14 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     );
 
     if (user) {
-      body = JSON.stringify(user);
       const now = new Date();
-      now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
-      cookies.set("loggedUser", user.id, { expires: now, path: "/" });
-      return redirect("/", 307);
+      const expirationDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      cookies().set("loggedUser", user.id, {
+        path: "/",
+        expires: expirationDate,
+      });
+
+      return Response.json(user);
     } else {
       body = JSON.stringify({ res: `Wrong email or password` });
       options.status = 401;

@@ -1,30 +1,24 @@
+"use client";
 import type { User } from "@/types/user";
-import { FacebookIcon } from "../utils/icons";
 import {
   UsersIcon,
   VideoCameraIcon,
   HomeIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-
-const handleLogout = () => {
-  const { protocol, host } = window.location;
-  const baseUrl = protocol + "//" + host;
-
-  fetch(baseUrl + "/api/logout", {
-    method: "POST",
-  }).then((res) =>
-    import("astro:transitions/client").then(({ navigate }) => navigate(res.url))
-  );
-};
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image"
+import FacebookIcon from "./FacebookIcon";
 
 type Props = {
-  currentUrl: URL;
   user: User;
 };
 
-const NavBar = ({ currentUrl, user }: Props) => {
+const NavBar = ({ user }: Props) => {
+  const pathname = "/";
+
   const [visibleUserOptions, setVisibleUserOptions] = useState(false);
   const paths = [
     {
@@ -50,22 +44,20 @@ const NavBar = ({ currentUrl, user }: Props) => {
         <FacebookIcon className="w-7" />
       </div>
       <div className="flex w-3/5 place-content-center font-medium text-gray-500 gap-2">
-        {paths.map((path, i) => (
-          <div key={i} className="relative">
-            <a
-              href={path.url}
+        {paths.map(({ url, icon, name }) => (
+          <div key={url} className="relative">
+            <Link
+              href={url}
               className={`${
-                path.url == currentUrl.pathname
-                  ? "text-blue-600"
-                  : "hover:bg-gray-200"
+                url == pathname ? "text-blue-600" : "hover:bg-gray-200"
               } group inline-flex w-32 h-12 place-content-center rounded-md mt-1`}
             >
-              {path.icon}
+              {icon}
               <div className="invisible group-hover:visible absolute top-16 bg-gray-700 p-2 rounded-md text-white text-xs">
-                {path.name}
+                {name}
               </div>
-            </a>
-            {path.url == currentUrl.pathname && (
+            </Link>
+            {url == pathname && (
               <div className="absolute bottom-0 h-1 w-full bg-blue-600 z-10"></div>
             )}
           </div>
@@ -76,7 +68,9 @@ const NavBar = ({ currentUrl, user }: Props) => {
           onClick={() => setVisibleUserOptions(!visibleUserOptions)}
           className="peer"
         >
-          <img
+          <Image
+          width={10}
+          height={10}
             className="w-10 h-10 rounded-full self-center"
             src={user.image}
             alt="Profile image"
@@ -94,20 +88,30 @@ const NavBar = ({ currentUrl, user }: Props) => {
 export default NavBar;
 
 const UserOptionsCard = ({ user }: { user: User }) => {
+  const router = useRouter();
+  const handleLogout = async () => {
+    const res = await fetch(window.location.origin + "/api/logout", {
+      method: "POST",
+    });
+    if (res.ok) router.push(res.url);
+  };
+
   return (
     <div className="flex flex-col absolute top-12 z-10 gap-2 bg-white border border-gray-200 rounded-md shadow-md p-4 w-1/5">
       <div className="inline-flex gap-2 place-items-center ">
-        <a
-          href="/profile"
+        <Link
+          href={`/profile/${user.id}`}
           className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full"
         >
-          <img
+          <Image
+          width={10}
+          height={10}
             src={user.image}
             alt="User profile image"
             className="w-9 h-9 rounded-full object-cover"
           />
           <p className="font-medium self-center">{user.name}</p>
-        </a>
+        </Link>
       </div>
       <div className="inline-flex gap-2 place-items-center">
         <button

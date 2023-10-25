@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 
 const LoginCard = () => {
@@ -84,9 +85,9 @@ const LoginCard = () => {
       <div className="flex place-content-center pt-4">
         <p>
           ¿Ya tienes cuenta?{" "}
-          <a href="/login" className="text-blue-600">
+          <Link href="/login" className="text-blue-600">
             Iniciar sesión
-          </a>
+          </Link>
         </p>
       </div>
     </div>

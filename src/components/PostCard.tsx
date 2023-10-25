@@ -1,8 +1,9 @@
+"use client";
 import type { Post as PostType } from "../types/posts";
 import { useEffect, useState } from "react";
 import getTimeAgo from "../utils/TimeAgo";
 import type { User } from "../types/user";
-import isEqual from "lodash/isEqual";
+// import isEqual from "lodash/isEqual";
 import Button from "./Button";
 import CommentSection from "./CommentSection";
 import {
@@ -11,13 +12,14 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   const [timeAgo, setTimeAgo] = useState(getTimeAgo(post.created_at));
   const [likes, setLikes] = useState(post.feedback.likes);
   const [postLiked, setPostLiked] = useState(
     likes.some((element) => {
-      return isEqual(element, user);
+      // return isEqual(element, user);
     })
   );
   const [visibleComments, setVisibleComments] = useState(false);
@@ -55,7 +57,9 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   return (
     <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
       <div className="flex space-x-2">
-        <img
+        <Image
+          width={60}
+          height={60}
           className="w-12 rounded-full"
           src={postOwner?.image}
           alt="Profile image"
@@ -67,7 +71,14 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="font-normal text-lg">{post.body.text}</p>
-        {post.body.image && <img src={post.body.image} alt="Post image" />}
+        {post.body.image && (
+          <Image
+            width={1920}
+            height={1080}
+            src={post.body.image}
+            alt="Post image"
+          />
+        )}
         {(likes.length > 0 || post.feedback.comments.length > 0) && (
           <div className="grid grid-cols-2 mx-2">
             {likes.length > 0 && (

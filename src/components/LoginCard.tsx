@@ -1,6 +1,11 @@
+"use client"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import {redirect} from "next/navigation"
 
 const LoginCard = () => {
+  const router = useRouter()
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [failed, setFailed] = useState(false);
@@ -15,7 +20,7 @@ const LoginCard = () => {
       }),
     });
     if (res.ok)
-      import("astro:transitions/client").then(({ navigate }) => navigate("/"));
+      redirect("/");
     else setFailed(true);
   };
 
@@ -55,9 +60,9 @@ const LoginCard = () => {
         </button>
       </form>
       <div className="flex place-content-center pt-4">
-        <a href="/signup" className="w-fit p-3 border rounded-md bg-green-500 text-white font-medium hover:bg-green-600">
+        <Link href="/signup" className="w-fit p-3 border rounded-md bg-green-500 text-white font-medium hover:bg-green-600">
           Crear cuenta nueva
-        </a>
+        </Link>
       </div>
     </div>
   );

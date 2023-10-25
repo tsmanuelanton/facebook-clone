@@ -24,3 +24,5 @@ export const FacebookIcon = ({ className }: { className?: string }) => (
     ></path>
   </svg>
 );
+
+export default FacebookIcon;

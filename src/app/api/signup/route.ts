@@ -1,6 +1,7 @@
-import type { APIRoute } from "astro";
 import type { User } from "@/types/user";
 import { addUser, getUsers } from "@/lib/firebase/firestore/users";
+import { NextRequest } from "next/server";
+
 
 type UserSignUpType = {
   name: string;
@@ -9,7 +10,7 @@ type UserSignUpType = {
   password: string;
 };
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST = async (request : NextRequest) => {
   const data: UserSignUpType = await request.json();
 
   let body,
@@ -33,7 +34,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       const newUserID = await addUser(newUser)
       const now = new Date();
       now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
-      cookies.set("loggedUser", newUserID, { expires: now, path: "/" });
+      request.cookies.set("loggedUser", newUserID);
     }
   } catch (error) {
     body = null;
