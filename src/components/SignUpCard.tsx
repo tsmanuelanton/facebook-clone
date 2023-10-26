@@ -1,4 +1,6 @@
+"use client"
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 const LoginCard = () => {
@@ -10,9 +12,8 @@ const LoginCard = () => {
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { protocol, host } = window.location;
-    const baseUrl = protocol + "//" + host;
-    const res = await fetch(`${baseUrl}/api/signup`, {
+    const { origin } = window.location;
+    const res = await fetch(`${origin}/api/signup`, {
       method: "POST",
       body: JSON.stringify({
         name,
@@ -22,7 +23,7 @@ const LoginCard = () => {
       }),
     });
     if (res.ok)
-      import("astro:transitions/client").then(({ navigate }) => navigate("/"));
+      redirect("/")
     else setFailed(true);
   };
 

@@ -1,8 +1,4 @@
-import type {
-  Post as PostType,
-  PostBody as PostBodyType,
-  Post,
-} from "../types/posts";
+import type { Post as PostType } from "../types/posts";
 import type { User } from "../types/user";
 import NewPostCard from "./NewPostCard";
 import PostCard from "./PostCard";
@@ -13,8 +9,6 @@ type Props = {
 };
 
 const PostCardList = ({ user, posts: initialPosts }: Props) => {
-  // const [posts, setPosts] = useState<Post[]>(initialPosts);
-
   return (
     <div className="flex flex-col space-y-4">
       <NewPostCard user={user} />

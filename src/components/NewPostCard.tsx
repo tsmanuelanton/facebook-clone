@@ -4,11 +4,13 @@ import type {
   Post as PostType,
   PostBody as PostBodyType,
   Post,
-} from "../types/posts";import { useState, type FormEvent } from "react";
+} from "../types/posts";
+import { useState, type FormEvent } from "react";
 import type { PostBody } from "../types/posts";
 import type { User } from "../types/user";
 import Button from "./Button";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const NewPost = ({ user }: { user: User }) => {
   const [text, setText] = useState<string>("");
@@ -38,20 +40,22 @@ const NewPost = ({ user }: { user: User }) => {
       body: JSON.stringify(post),
     }).catch(console.error);
 
-    router.refresh()
+    router.refresh();
 
-  //   const res = await fetch(baseUrl + "/api/posts");
+    //   const res = await fetch(baseUrl + "/api/posts");
 
-  //   if (res.ok) {
-  //     const newPosts: Post[] = await res.json();
-  //     setPosts(newPosts);
-  //   }
+    //   if (res.ok) {
+    //     const newPosts: Post[] = await res.json();
+    //     setPosts(newPosts);
+    //   }
   };
 
   return (
     <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
       <div className="flex space-x-2">
-        <img
+        <Image
+          width={64}
+          height={64}
           className="w-12 rounded-full"
           src={user.image}
           alt="Profile image"
@@ -75,17 +79,35 @@ const NewPost = ({ user }: { user: User }) => {
       </div>
       <div className="flex justify-between pt-2 font-medium text-gray-500">
         <Button>
-          <img className="mr-2" src="/img/live-video.png" />
+          <Image
+            width={24}
+            height={24}
+            alt="Icóno Video en directo"
+            className="mr-2"
+            src="/img/live-video.png"
+          />
           Video en directo
         </Button>
 
         <Button>
-          <img className="mr-2" src="/img/images.png" />
+          <Image
+            width={24}
+            height={24}
+            alt="Icóno Foto/video"
+            className="mr-2"
+            src="/img/images.png"
+          />
           Foto/video
         </Button>
 
         <Button>
-          <img className="mr-2" src="/img/happy-face.png" />
+          <Image
+            width={24}
+            height={24}
+            alt="Icóno Sentimiento/actividad"
+            className="mr-2"
+            src="/img/happy-face.png"
+          />
           Sentimiento/actividad
         </Button>
       </div>

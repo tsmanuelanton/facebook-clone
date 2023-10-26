@@ -18,7 +18,7 @@ export const getUser = async (id: string) => {
     ...snapshot.data(),
     id: snapshot.id,
     friends: snapshot.get("friends").map((ref: DocumentReference) => ref.id),
-  };
+  } as User;
   return user;
 };
 
@@ -28,7 +28,7 @@ export const getUsers = async () => {
       ...snapshot.data(),
       id: snapshot.id,
       friends: snapshot.get("friends").map((ref: DocumentReference) => ref.id),
-    }))
+    } as User))
   );
 };
 

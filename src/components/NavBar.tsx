@@ -69,8 +69,8 @@ const NavBar = ({ user }: Props) => {
           className="peer"
         >
           <Image
-          width={10}
-          height={10}
+          width={64}
+          height={64}
             className="w-10 h-10 rounded-full self-center"
             src={user.image}
             alt="Profile image"
@@ -93,7 +93,7 @@ const UserOptionsCard = ({ user }: { user: User }) => {
     const res = await fetch(window.location.origin + "/api/logout", {
       method: "POST",
     });
-    if (res.ok) router.push(res.url);
+    if (res.ok) router.push(window.location.origin + "/login");
   };
 
   return (
@@ -104,8 +104,8 @@ const UserOptionsCard = ({ user }: { user: User }) => {
           className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full"
         >
           <Image
-          width={10}
-          height={10}
+          width={64}
+          height={64}
             src={user.image}
             alt="User profile image"
             className="w-9 h-9 rounded-full object-cover"

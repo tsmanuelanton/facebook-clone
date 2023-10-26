@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import {redirect} from "next/navigation"
 
 const LoginCard = () => {
   const router = useRouter()
@@ -20,7 +19,7 @@ const LoginCard = () => {
       }),
     });
     if (res.ok)
-      redirect("/");
+      return router.push("/");
     else setFailed(true);
   };
 

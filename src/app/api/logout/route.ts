@@ -3,5 +3,5 @@ import { redirect } from "next/navigation";
 
 export const POST = async () => {
   cookies().delete("loggedUser");
-  return redirect("/login");
+  return Response.json({res: "Log out successfully"})
 };
