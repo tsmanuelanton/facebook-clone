@@ -1,16 +1,14 @@
-import { getUsers, getUser, addUser } from "@/lib/firebase/firestore/users";
+import { getUsers, addUser } from "@/lib/firebase/firestore/users";
 import { User } from "@/types/user";
 
-export const GET = async (request: Request) => {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
-  const json = id ? await getUser(id) : await getUsers();
-  if (json == undefined) {
+export const GET = async () => {
+  const users = await getUsers();
+  if (users == undefined) {
     return new Response(null, {
       status: 404,
     });
   }
-  return Response.json(json);
+  return Response.json(users);
 };
 
 export const POST = async (request: Request) => {

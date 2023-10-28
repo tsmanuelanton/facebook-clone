@@ -1,34 +1,33 @@
-import { addPost, getPost, getPosts } from "@/lib/firebase/firestore/posts";
+import { addPost, getPosts } from "@/lib/firebase/firestore/posts";
 import { Post } from "@/types/posts";
 
 export const GET = async ({ url }: Request) => {
-  const { searchParams } = new URL(url);
-  const id = searchParams.get("id");
+  const posts = await getPosts();
 
-  const json = id ? await getPost(id) : await getPosts();
-
-  if (json == undefined)
-    return Response.error();
-  return Response.json(json);
+  if (posts == undefined) return Response.error();
+  return Response.json(posts);
 };
 
 export const POST = async (request: Request) => {
-  const data = await request.json();
-
-  const userID = request.headers.get("userID")!;
   try {
+    const { text } = await request.json();
+    const userID = request.headers.get("userID")!;
+
     const post: Post = {
       id: "tempID",
       userID,
-      body: data.body,
+      body: { text },
       created_at: new Date(),
       feedback: {
         comments: [],
         likes: [],
       },
     };
-    const id = await addPost(post);
-    return Response.json({ res: "Post uploaded successfully with id " + id });
+
+    const newID = await addPost(post);
+    return Response.json({
+      res: "Post uploaded successfully with id " + newID,
+    });
   } catch {
     return new Response(null, {
       status: 400,

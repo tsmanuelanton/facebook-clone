@@ -3,7 +3,6 @@ import PostList from "../../components/PostCardList";
 import LeftNavBar from "../../components/LeftNavBar";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getPosts } from "@/lib/firebase/firestore/posts";
 import { getUser } from "@/lib/firebase/firestore/users";
@@ -20,11 +19,11 @@ export default async function Home() {
   return (
     <div className="flex place-content-center p-4">
       <div className="w-1/5">
-        <LeftNavBar user={user} />
+        <LeftNavBar />
       </div>
       <main className="flex place-content-center w-3/5">
         <div className="w-2/3">
-          <PostList user={user} posts={posts} />
+          <PostList posts={posts} />
         </div>
       </main>
       <div className="w-1/6">

@@ -1,22 +1,26 @@
-import { useState, type FormEvent, useEffect} from "react";
+import { useState, type FormEvent, useEffect, useContext } from "react";
 import type { PostComment as PostCommentType } from "../types/posts";
 import Button from "./Button";
 import getTimeAgo from "../utils/TimeAgo";
 import type { User } from "@/types/user";
+import { SessionContext } from "@/context/SessionContext";
+import Image from "next/image";
+import { getUser } from "@/services/users";
 
 type Props = {
   comments: PostCommentType[];
-  user: User;
 };
 
-const CommentSection = ({ comments: postComments, user }: Props) => {
-  const [comments, setComments] = useState(postComments);
+const CommentSection = ({ comments: initialComments }: Props) => {
+  const [comments, setComments] = useState(initialComments);
   const [text, setText] = useState<string>("");
+  const { loggedUser } = useContext(SessionContext);
+
   const handleCommentBtn = (event: FormEvent<HTMLFormElement>) => {
     setComments(
       comments.concat({
         id: crypto.randomUUID(),
-        userID: user.id,
+        userID: loggedUser!.id,
         text,
         created_at: new Date(),
       })
@@ -35,13 +39,15 @@ const CommentSection = ({ comments: postComments, user }: Props) => {
 
       <div className="sticky bg-white p-2 border-t">
         <div className="flex space-x-2">
-          <img
-            className="w-12 rounded-full"
-            src={user.image}
-            alt="Profile image"
+          <Image
+          width={24}
+          height={24}
+          src={loggedUser?.image || ""}
+          className="w-12 rounded-full"
+          alt="Profile image"
           />
           <form
-            onSubmit={(e) => handleCommentBtn(e)}
+            onSubmit={handleCommentBtn}
             className="flex w-full gap-2"
           >
             <input
@@ -70,17 +76,18 @@ export default CommentSection;
 const Comment = ({ comment }: { comment: PostCommentType }) => {
   const [user, setUser] = useState<User>();
   useEffect(() => {
-    fetch(`${window.location.origin}/api/users?id=${comment.userID}`)
-      .then((res) => res.json())
-      .then((user) => setUser(user));
-  }, []);
+    getUser(comment.userID)
+      .then((user) => user && setUser(user));
+  }, [comment]);
 
   return (
     <div key={comment.id} className="flex m-2 gap-2 mr-10">
       <div className="flex-none w-8 p-0 m-0">
-        <img
+        <Image
+        width={24}
+        height={24}
           className="rounded-full w-8"
-          src={user?.image}
+          src={user?.image || ""}
           alt="Profile image"
         />
       </div>

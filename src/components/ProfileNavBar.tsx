@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const ProfileNavBar = () => {
   const paths = [
     {
@@ -28,7 +30,7 @@ const ProfileNavBar = () => {
         <div className="flex font-medium text-gray-500">
           {paths.map((path, i) => (
             <div key={i} className="relative">
-              <a
+              <Link
                 href={path.url}
                 className={`${
                   path.name == "Publicaciones"
@@ -37,7 +39,7 @@ const ProfileNavBar = () => {
                 } group flex w-32 h-12 place-content-center rounded-md m-1`}
               >
                 <p className="self-center">{path.name}</p>
-              </a>
+              </Link>
               {path.name == "Publicaciones" && (
                 <div className="absolute bottom-0 h-1 w-full bg-blue-600 z-10"></div>
               )}

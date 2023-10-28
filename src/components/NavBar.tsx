@@ -6,11 +6,12 @@ import {
   HomeIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image"
 import FacebookIcon from "./FacebookIcon";
+import { SessionContext } from "@/context/SessionContext";
 
 type Props = {
   user: User;
@@ -88,12 +89,11 @@ const NavBar = ({ user }: Props) => {
 export default NavBar;
 
 const UserOptionsCard = ({ user }: { user: User }) => {
+  const {logout} = useContext(SessionContext)
   const router = useRouter();
   const handleLogout = async () => {
-    const res = await fetch(window.location.origin + "/api/logout", {
-      method: "POST",
-    });
-    if (res.ok) router.push(window.location.origin + "/login");
+    await logout()
+    router.push(window.location.origin + "/login");
   };
 
   return (

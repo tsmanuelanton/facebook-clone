@@ -1,7 +1,9 @@
-"use client"
+"use client";
+import { SessionContext } from "@/context/SessionContext";
+import { signUp } from "@/services/signup";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useState, type FormEvent, useContext } from "react";
 
 const LoginCard = () => {
   const [name, setName] = useState<string>();
@@ -9,21 +11,22 @@ const LoginCard = () => {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [failed, setFailed] = useState(false);
+  const router = useRouter()
+  const { loggedUser } = useContext(SessionContext);
+  loggedUser && redirect("/");
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { origin } = window.location;
-    const res = await fetch(`${origin}/api/signup`, {
-      method: "POST",
-      body: JSON.stringify({
+    if (name && surname && email && password) {
+      const isSignedUp = await signUp({
         name,
         surname,
         email,
         password,
-      }),
-    });
-    if (res.ok)
-      redirect("/")
+      })
+      if (isSignedUp)
+        router.push("/")
+    }
     else setFailed(true);
   };
 

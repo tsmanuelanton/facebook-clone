@@ -1,20 +1,29 @@
-import type { Post as PostType } from "../types/posts";
-import type { User } from "../types/user";
+"use client"
+import { createPost, getPosts } from "@/services/posts";
+import type { PostBody, Post as PostType } from "../types/posts";
 import NewPostCard from "./NewPostCard";
 import PostCard from "./PostCard";
+import { useState } from "react";
 
 type Props = {
-  user: User;
   posts: PostType[];
 };
 
-const PostCardList = ({ user, posts: initialPosts }: Props) => {
+const PostCardList = ({ posts: initialPosts }: Props) => {
+  const [posts, setPosts] = useState(initialPosts)
+
+  const addPostHandler = async (post: PostBody) => {
+    await createPost(post);
+    const newPosts = await getPosts()
+    setPosts(newPosts)
+  };
+
   return (
     <div className="flex flex-col space-y-4">
-      <NewPostCard user={user} />
+      <NewPostCard addPostHandler={addPostHandler}/>
       <div className="flex flex-col space-y-4">
-        {initialPosts.map((post) => (
-          <PostCard key={post.id} post={post} user={user} />
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} />
         ))}
       </div>
     </div>

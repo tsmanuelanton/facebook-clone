@@ -16,8 +16,8 @@ const ProfileHeader = ({ user }: { user: User }) => {
       <div className="flex place-content-center bg-white">
         <div className="inline-flex h-32 w-4/6 px-8">
           <Image
-            width={128}
-            height={128}
+            width={512}
+            height={512}
             src={user.image}
             alt="Profile header image"
             className="relative -top-16 w-44 h-44 object-cover rounded-full border-4"

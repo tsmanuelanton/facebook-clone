@@ -25,7 +25,7 @@ export default async function Profile({
               <UserDetailsCard />
             </div>
             <div className="w-3/5">
-              <PostCardList user={user} posts={posts} />
+              <PostCardList posts={posts} />
             </div>
           </div>
         </div>

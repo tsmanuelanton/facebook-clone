@@ -1,54 +1,25 @@
 "use client";
 
-import type {
-  Post as PostType,
-  PostBody as PostBodyType,
-  Post,
-} from "../types/posts";
-import { useState, type FormEvent } from "react";
-import type { PostBody } from "../types/posts";
-import type { User } from "../types/user";
+import { useState, useContext, FormEvent } from "react";
 import Button from "./Button";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { SessionContext } from "@/context/SessionContext";
+import { PostBody } from "@/types/posts";
 
-const NewPost = ({ user }: { user: User }) => {
+type Props = {
+  addPostHandler: (post: PostBody) => void
+}
+
+const NewPost = ({addPostHandler}: Props) => {
   const [text, setText] = useState<string>("");
-  const router = useRouter();
+  const { loggedUser } = useContext(SessionContext);
 
-  const postAction = (e: FormEvent<HTMLFormElement>) => {
-    if (text) addPost({ text });
-
-    e.preventDefault();
-  };
-
-  const addPost = async (body: PostBodyType) => {
-    const post: PostType = {
-      id: crypto.randomUUID(),
-      userID: user.id,
-      created_at: new Date(),
-      body,
-      feedback: { likes: [], comments: [] },
-    };
-
-    const { protocol, host } = window.location;
-    const baseUrl = `${protocol}//${host}`;
-
-    // setPosts([post].concat(posts));
-    await fetch(baseUrl + "/api/posts", {
-      method: "POST",
-      body: JSON.stringify(post),
-    }).catch(console.error);
-
-    router.refresh();
-
-    //   const res = await fetch(baseUrl + "/api/posts");
-
-    //   if (res.ok) {
-    //     const newPosts: Post[] = await res.json();
-    //     setPosts(newPosts);
-    //   }
-  };
+  function handleOnSubmit(e: FormEvent<HTMLFormElement>): void {
+    e.preventDefault()
+    if (text)
+      addPostHandler({text})
+    setText("")
+  }
 
   return (
     <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
@@ -57,16 +28,16 @@ const NewPost = ({ user }: { user: User }) => {
           width={64}
           height={64}
           className="w-12 rounded-full"
-          src={user.image}
+          src={loggedUser?.image || ""}
           alt="Profile image"
         />
-        <form onSubmit={postAction} className="flex w-full gap-2">
+        <form onSubmit={handleOnSubmit} className="flex w-full gap-2">
           <input
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={({target}) => setText(target.value)}
             className="rounded-3xl w-full bg-gray-200 p-2"
             type="text"
-            placeholder={`¿Que estás pensando, ${user.name}?`}
+            placeholder={`¿Que estás pensando, ${loggedUser?.name}?`}
           />
           <Button
             type="submit"

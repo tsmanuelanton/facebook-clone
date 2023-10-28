@@ -1,6 +1,6 @@
 "use client";
 import type { Post as PostType } from "../types/posts";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import getTimeAgo from "../utils/TimeAgo";
 import type { User } from "../types/user";
 // import isEqual from "lodash/isEqual";
@@ -13,8 +13,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { SessionContext } from "@/context/SessionContext";
+import { getUser } from "@/services/users";
 
-const PostCard = ({ post, user }: { post: PostType; user: User }) => {
+const PostCard = ({ post }: { post: PostType }) => {
   const [timeAgo, setTimeAgo] = useState(getTimeAgo(post.created_at));
   const [likes, setLikes] = useState(post.feedback.likes);
   const [postLiked, setPostLiked] = useState(
@@ -24,14 +26,10 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   );
   const [visibleComments, setVisibleComments] = useState(false);
   const [postOwner, setPostOwner] = useState<User>();
+  const { loggedUser } = useContext(SessionContext);
 
   useEffect(() => {
-    const { protocol, host } = window.location;
-    const baseUrl = protocol + "//" + host;
-    fetch(`${baseUrl}/api/users?id=${post.userID}`)
-      .then((res) => res.json())
-      .then((postOwner) => setPostOwner(postOwner))
-      .catch(console.error);
+    getUser(post.userID).then((user) => user && setPostOwner(user));
 
     const intervalID = setInterval(
       () => setTimeAgo(getTimeAgo(post.created_at)),
@@ -42,10 +40,12 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
   }, []);
 
   const handleLikeBtn = () => {
-    let currentUserIndex = likes.findIndex((userId) => userId === user.id);
+    let currentUserIndex = likes.findIndex(
+      (userId) => userId === loggedUser?.id
+    );
 
     if (currentUserIndex === -1) {
-      setLikes(likes.concat(user.id));
+      setLikes(likes.concat(loggedUser?.id!));
       setPostLiked(true);
     } else {
       likes.splice(currentUserIndex, 1);
@@ -54,9 +54,6 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
     }
   };
 
-  if (!postOwner)
-    return <div>Loading</div>
-
   return (
     <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
       <div className="flex space-x-2">
@@ -64,7 +61,7 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
           width={60}
           height={60}
           className="w-12 rounded-full"
-          src={postOwner.image}
+          src={postOwner?.image || "/img/default-user.png"}
           alt="Profile image"
         />
         <div>
@@ -118,7 +115,7 @@ const PostCard = ({ post, user }: { post: PostType; user: User }) => {
         </Button>
       </div>
       {visibleComments && (
-        <CommentSection user={user} comments={post.feedback.comments} />
+        <CommentSection comments={post.feedback.comments} />
       )}
     </div>
   );

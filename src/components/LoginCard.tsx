@@ -1,26 +1,23 @@
-"use client"
+"use client";
+import { SessionContext } from "@/context/SessionContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useContext } from "react";
 
 const LoginCard = () => {
-  const router = useRouter()
+  const { login } = useContext(SessionContext);
+  const router = useRouter();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [failed, setFailed] = useState(false);
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch(`${window.location.origin}/api/login`, {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-    if (res.ok)
-      return router.push("/");
-    else setFailed(true);
+
+    if (email && password) {
+      if (await login(email, password)) return router.push("/");
+      setFailed(true);
+    }
   };
 
   return (
@@ -59,7 +56,10 @@ const LoginCard = () => {
         </button>
       </form>
       <div className="flex place-content-center pt-4">
-        <Link href="/signup" className="w-fit p-3 border rounded-md bg-green-500 text-white font-medium hover:bg-green-600">
+        <Link
+          href="/signup"
+          className="w-fit p-3 border rounded-md bg-green-500 text-white font-medium hover:bg-green-600"
+        >
           Crear cuenta nueva
         </Link>
       </div>
