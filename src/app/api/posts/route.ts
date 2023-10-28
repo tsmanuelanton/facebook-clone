@@ -1,32 +1,37 @@
 import { addPost, getPost, getPosts } from "@/lib/firebase/firestore/posts";
+import { Post } from "@/types/posts";
 
-export const GET = async ({ url } : Request) => {
-  const {searchParams} = new URL(url)
+export const GET = async ({ url }: Request) => {
+  const { searchParams } = new URL(url);
   const id = searchParams.get("id");
 
   const json = id ? await getPost(id) : await getPosts();
-  
-  if (json == undefined) {
-    return Response.error()
-  }
-  return Response.json(json)
+
+  if (json == undefined)
+    return Response.error();
+  return Response.json(json);
 };
 
-export const POST = async (request : Request) => {
-  const post = await request.json();
-  let body, options;
+export const POST = async (request: Request) => {
+  const data = await request.json();
 
-  if (post != undefined) {
-    await addPost(post)
-    body = JSON.stringify({ res: "Post uploaded successfully" });
-    options = {
-      headers: { "content-type": "application/json" },
+  const userID = request.headers.get("userID")!;
+  try {
+    const post: Post = {
+      id: "tempID",
+      userID,
+      body: data.body,
+      created_at: new Date(),
+      feedback: {
+        comments: [],
+        likes: [],
+      },
     };
-  } else {
-    body = null;
-    options = {
+    const id = await addPost(post);
+    return Response.json({ res: "Post uploaded successfully with id " + id });
+  } catch {
+    return new Response(null, {
       status: 400,
-    };
+    });
   }
-  return new Response(body, options);
 };

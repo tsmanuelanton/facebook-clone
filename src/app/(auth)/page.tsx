@@ -1,19 +1,17 @@
 import Image from "next/image";
-import PostList from "../../../components/PostCardList";
-import LeftNavBar from "../../../components/LeftNavBar";
+import PostList from "../../components/PostCardList";
+import LeftNavBar from "../../components/LeftNavBar";
 import type { User } from "@/types/user";
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getPosts } from "@/lib/firebase/firestore/posts";
 import { getUser } from "@/lib/firebase/firestore/users";
 
 export default async function Home() {
-  const loggedUserId = cookies().get("loggedUser")?.value;
-  if (!loggedUserId) redirect("/login");
-
+  const userID = headers().get("userID")!;
   const posts = await getPosts();
-  const user = await getUser(loggedUserId);
+  const user = await getUser(userID);
 
   const friends: User[] = await Promise.all(
     user.friends.map((id) => getUser(id))

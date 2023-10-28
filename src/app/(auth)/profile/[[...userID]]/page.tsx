@@ -4,14 +4,15 @@ import UserDetailsCard from "@/components/UserDetailsCard";
 import PostCardList from "@/components/PostCardList";
 import { getPosts } from "@/lib/firebase/firestore/posts";
 import { getUser } from "@/lib/firebase/firestore/users";
+import { headers } from "next/headers";
 
 export default async function Profile({
   params,
 }: {
-  params: { userID: string };
+  params: { userID?: string };
 }) {
   const posts = await getPosts();
-  const user = await getUser(params.userID);
+  const user = await getUser(params.userID?.at(0) || headers().get("userID")!);
 
   return (
     <>
