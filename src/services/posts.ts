@@ -23,3 +23,11 @@ export const getPosts = async () : Promise<Post[]> => {
     return res.json()
   return []
 }
+
+export const deletePost = async (postID: string) => {
+  const res = await fetch(`${window.location.origin}/api/posts/${postID}`,{
+    method: "DELETE"
+  })
+  if (res.ok)
+    return res.json()
+}

@@ -1,5 +1,5 @@
 "use client"
-import { createPost, getPosts } from "@/services/posts";
+import { createPost, deletePost, getPosts } from "@/services/posts";
 import type { PostBody, Post as PostType } from "../types/posts";
 import NewPostCard from "./NewPostCard";
 import PostCard from "./PostCard";
@@ -18,12 +18,18 @@ const PostCardList = ({ posts: initialPosts }: Props) => {
     setPosts(newPosts)
   };
 
+  const deletePostHandler = async (postID : string) => {
+    await deletePost(postID);
+    const newPosts = await getPosts()
+    setPosts(newPosts)
+  };
+
   return (
     <div className="flex flex-col space-y-4">
       <NewPostCard addPostHandler={addPostHandler}/>
       <div className="flex flex-col space-y-4">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} deletePostHandler={deletePostHandler} />
         ))}
       </div>
     </div>

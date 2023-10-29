@@ -7,16 +7,29 @@ import type { User } from "../types/user";
 import Button from "./Button";
 import CommentSection from "./CommentSection";
 import {
+  BookmarkIcon,
+  BuildingOfficeIcon,
   ChatBubbleLeftIcon,
   HandThumbUpIcon,
   ShareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
-import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
+import {
+  EllipsisHorizontalIcon,
+  HandThumbUpIcon as HandThumbUpIconSolid,
+} from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { SessionContext } from "@/context/SessionContext";
 import { getUser } from "@/services/users";
+import useComponentVisible from "@/hooks/useComponentVisible";
 
-const PostCard = ({ post }: { post: PostType }) => {
+const PostCard = ({
+  post,
+  deletePostHandler,
+}: {
+  post: PostType;
+  deletePostHandler: (postID: string) => void;
+}) => {
   const [timeAgo, setTimeAgo] = useState(getTimeAgo(post.created_at));
   const [likes, setLikes] = useState(post.feedback.likes);
   const [postLiked, setPostLiked] = useState(
@@ -27,6 +40,8 @@ const PostCard = ({ post }: { post: PostType }) => {
   const [visibleComments, setVisibleComments] = useState(false);
   const [postOwner, setPostOwner] = useState<User>();
   const { loggedUser } = useContext(SessionContext);
+  const { ref, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible(false);
 
   useEffect(() => {
     getUser(post.userID).then((user) => user && setPostOwner(user));
@@ -56,17 +71,56 @@ const PostCard = ({ post }: { post: PostType }) => {
 
   return (
     <div className="rounded-md shadow-md p-3 divide-y-2 space-y-4 bg-white w-full">
-      <div className="flex space-x-2">
-        <Image
-          width={60}
-          height={60}
-          className="w-12 rounded-full"
-          src={postOwner?.image || "/img/default-user.png"}
-          alt="Profile image"
-        />
-        <div>
-          <p className="font-medium">{postOwner?.name}</p>
-          <p className="text-sm font-medium text-gray-500">{timeAgo}</p>
+      <div className="flex justify-between">
+        <div ref={ref} className="flex space-x-2">
+          <Image
+            width={60}
+            height={60}
+            className="w-12 rounded-full"
+            src={postOwner?.image || "/img/default-user.png"}
+            alt="Profile image"
+          />
+          <div>
+            <p className="font-medium">{postOwner?.name}</p>
+            <p className="text-sm font-medium text-gray-500">{timeAgo}</p>
+          </div>
+        </div>
+
+        <div className="relative">
+          <button
+            onClick={() => setIsComponentVisible(!isComponentVisible)}
+            className="flex place-content-center rounded-full w-10 h-10 hover:bg-gray-300"
+          >
+            <EllipsisHorizontalIcon
+              width={24}
+              className="self-center text-gray-500"
+            />
+          </button>
+
+          {isComponentVisible && (
+            <div
+              ref={ref}
+              className="flex flex-col absolute top-12 z-10 gap-2 bg-white border border-gray-200 rounded-md shadow-md p-4 w-64"
+            >
+              {post.userID === loggedUser?.id && (
+                <div className="inline-flex gap-2 place-items-center">
+                  <button
+                    onClick={() => deletePostHandler(post.id)}
+                    className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full place-items-center"
+                  >
+                    <TrashIcon className="w-6" />
+                    Mover a la papelera
+                  </button>
+                </div>
+              )}
+              <div className="inline-flex gap-2 place-items-center">
+                <button className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full place-items-center">
+                  <BookmarkIcon className="w-6" />
+                  Guardar enlace
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -114,9 +168,7 @@ const PostCard = ({ post }: { post: PostType }) => {
           Compartir
         </Button>
       </div>
-      {visibleComments && (
-        <CommentSection comments={post.feedback.comments} />
-      )}
+      {visibleComments && <CommentSection comments={post.feedback.comments} />}
     </div>
   );
 };

@@ -6,12 +6,13 @@ import {
   HomeIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image"
+import Image from "next/image";
 import FacebookIcon from "./FacebookIcon";
 import { SessionContext } from "@/context/SessionContext";
+import useComponentVisible from "@/hooks/useComponentVisible";
 
 type Props = {
   user: User;
@@ -19,8 +20,9 @@ type Props = {
 
 const NavBar = ({ user }: Props) => {
   const pathname = "/";
+  const { ref, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible(false);
 
-  const [visibleUserOptions, setVisibleUserOptions] = useState(false);
   const paths = [
     {
       url: "/",
@@ -66,12 +68,12 @@ const NavBar = ({ user }: Props) => {
       </div>
       <div className="flex w-1/5 justify-end mx-2">
         <button
-          onClick={() => setVisibleUserOptions(!visibleUserOptions)}
+          onClick={() => setIsComponentVisible(!isComponentVisible)}
           className="peer"
         >
           <Image
-          width={64}
-          height={64}
+            width={64}
+            height={64}
             className="w-10 h-10 rounded-full self-center"
             src={user.image}
             alt="Profile image"
@@ -80,7 +82,11 @@ const NavBar = ({ user }: Props) => {
         <span className="invisible peer-hover:visible absolute top-16 bg-gray-700 p-2 rounded-md text-white text-xs">
           Cuenta
         </span>
-        {visibleUserOptions && <UserOptionsCard user={user} />}
+        {isComponentVisible && (
+          <div ref={ref} className="absolute top-12 z-10 w-1/5">
+            <UserOptionsCard user={user} />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -89,23 +95,23 @@ const NavBar = ({ user }: Props) => {
 export default NavBar;
 
 const UserOptionsCard = ({ user }: { user: User }) => {
-  const {logout} = useContext(SessionContext)
+  const { logout } = useContext(SessionContext);
   const router = useRouter();
   const handleLogout = async () => {
-    await logout()
+    await logout();
     router.push(window.location.origin + "/login");
   };
 
   return (
-    <div className="flex flex-col absolute top-12 z-10 gap-2 bg-white border border-gray-200 rounded-md shadow-md p-4 w-1/5">
+    <div className="flex flex-col gap-2 bg-white border border-gray-200 rounded-md shadow-md p-4">
       <div className="inline-flex gap-2 place-items-center ">
         <Link
           href={`/profile/${user.id}`}
           className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full"
         >
           <Image
-          width={64}
-          height={64}
+            width={64}
+            height={64}
             src={user.image}
             alt="User profile image"
             className="w-9 h-9 rounded-full object-cover"
