@@ -25,6 +25,7 @@ export const POST = async (request: Request) => {
     };
 
     const newID = await addPost(post);
+    console.log(newID)
     return Response.json({
       res: "Post uploaded successfully with id " + newID,
     });

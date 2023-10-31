@@ -1,106 +1,102 @@
-import { useState, type FormEvent, useEffect, useContext } from "react";
-import type { PostComment as PostCommentType } from "../types/posts";
-import Button from "./Button";
-import getTimeAgo from "../utils/TimeAgo";
-import type { User } from "@/types/user";
+import { useState, type FormEvent, useEffect, useContext, useRef } from "react";
 import { SessionContext } from "@/context/SessionContext";
 import Image from "next/image";
-import { getUser } from "@/services/users";
+import { PostComment } from "@/types/comments";
+import { createComment, deleteComment, getCommentsByPost } from "@/services/comments";
+import { Post } from "@/types/posts";
+import Comment from "./Comment";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 
 type Props = {
-  comments: PostCommentType[];
+  post: Post;
 };
 
-const CommentSection = ({ comments: initialComments }: Props) => {
-  const [comments, setComments] = useState(initialComments);
-  const [text, setText] = useState<string>("");
+const CommentSection = ({ post }: Props) => {
+  const [comments, setComments] = useState<PostComment[]>([]);
   const { loggedUser } = useContext(SessionContext);
+  const commentsContainerRef = useRef<HTMLDivElement>(null);
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
+  const [disableSendComment, setDisableSendComment] = useState(true);
 
-  const handleCommentBtn = (event: FormEvent<HTMLFormElement>) => {
-    setComments(
-      comments.concat({
-        id: crypto.randomUUID(),
-        userID: loggedUser!.id,
-        text,
-        created_at: new Date(),
-      })
-    );
-    setText("");
+  useEffect(() => {
+    getCommentsByPost(post.id).then(setComments);
+  }, [post]);
+
+  const handleCommentBtn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const comment = commentInputRef.current?.value;
+    if (comment) {
+      await createComment({
+        postID: post.id,
+        body: { text: comment, image: null },
+        commentID: null,
+      });
+      const newComments = await getCommentsByPost(post.id);
+      setComments(newComments);
+
+      commentInputRef.current!.value = "";
+      commentsContainerRef.current?.scrollTo({ top: 0 });
+    }
   };
 
+  const  handleDeleteComment = async (commentID: string) => {
+    await deleteComment(commentID)
+    const newComments = await getCommentsByPost(post.id);
+    setComments(newComments);
+  }
+
   return (
-    <div>
-      <div className="max-h-80 overflow-y-scroll">
+    <>
+      <div ref={commentsContainerRef} className="max-h-80 overflow-y-scroll">
         {comments?.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
+          <Comment key={comment.id} comment={comment} handleDeleteComment={handleDeleteComment} />
         ))}
       </div>
 
       <div className="sticky bg-white p-2 border-t">
         <div className="flex space-x-2">
-          <Image
-          width={24}
-          height={24}
-          src={loggedUser?.image || ""}
-          className="w-12 rounded-full"
-          alt="Profile image"
-          />
+          <div>
+            <Image
+              width={48}
+              height={48}
+              src={loggedUser?.image || "/img/default-user.png"}
+              className=" w-8 rounded-full"
+              alt="Profile image"
+            />
+          </div>
+
           <form
             onSubmit={handleCommentBtn}
-            className="flex w-full gap-2"
+            className="flex w-full gap-2 p-2 rounded-2xl bg-gray-200 "
           >
-            <input
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              className="rounded-3xl w-full bg-gray-200 p-2"
-              type="text"
+            <textarea
+              ref={commentInputRef}
+              onChange={({ target }) =>
+                setDisableSendComment(target.textLength === 0)
+              }
+              className="w-full focus:outline-none bg-gray-200 resize-none"
               placeholder="Escribe algo..."
             />
-            <Button
+            <button
+              disabled={disableSendComment}
               type="submit"
-              title="Publicar"
-              className="p-2 border-2 rounded-md border-indigo-400"
+              title="Publicar comentario"
+              className="self-end"
             >
-              Publicar
-            </Button>
+              <PaperAirplaneIcon
+                width={20}
+                height={20}
+                className={`${
+                  disableSendComment ? "text-gray-400" : "text-blue-500"
+                }`}
+              />
+            </button>
           </form>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default CommentSection;
-
-const Comment = ({ comment }: { comment: PostCommentType }) => {
-  const [user, setUser] = useState<User>();
-  useEffect(() => {
-    getUser(comment.userID)
-      .then((user) => user && setUser(user));
-  }, [comment]);
-
-  return (
-    <div key={comment.id} className="flex m-2 gap-2 mr-10">
-      <div className="flex-none w-8 p-0 m-0">
-        <Image
-        width={24}
-        height={24}
-          className="rounded-full w-8"
-          src={user?.image || ""}
-          alt="Profile image"
-        />
-      </div>
-
-      <div>
-        <div className=" bg-gray-200 rounded-3xl p-2 px-3">
-          <p className="font-medium">{user?.name}</p>
-          <p className="break-all">{comment.text}</p>
-        </div>
-        <p className="flex justify-end text-xs text-gray-500">
-          {getTimeAgo(comment.created_at)}
-        </p>
-      </div>
-    </div>
-  );
-};

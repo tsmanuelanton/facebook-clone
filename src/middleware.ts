@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/profile/:userID?", "/api/posts/:postID?", "/api/users"],
+  matcher: ["/", "/profile/:userID?", "/api/posts/:postID?", "/api/users", "/api/comments/:commentID?"],
 };

@@ -16,12 +16,10 @@ export const DELETE = async (req: NextRequest, { params }: {params: {postID : st
   const { postID } = params;
 
   const post = await getPost(postID)
-  console.log(post)
-  console.log(headers().get("userID"))
   if (post.userID === headers().get("userID")) {
     await deletePost(postID)
     return Response.json({res: `Post ${postID} removed successfully.`})
   }
 
-    return Response.json("Unauthorized", {status: 403});
+    return Response.json({res: "Unauthorized"}, {status: 403});
 };

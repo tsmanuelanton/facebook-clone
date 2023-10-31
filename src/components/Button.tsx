@@ -1,14 +1,17 @@
-const Button = (props : any) => {
-    const { children, className, ...rest } = props;
+type Props = {
+  centerContent?: boolean
+  children: string | React.ReactNode | React.ReactNode[]
+  type?: "button" | "submit" | "reset"
+  bgColor?: string
+  onClick?: () => void;
+};
 
+const LinkButton = ({ onClick, centerContent, children, type, bgColor}: Props) => {
   return (
-    <button
-     {...rest}
-      className={`${className} inline-flex w-1/3 p-2 place-content-center rounded-md hover:bg-gray-200 gap-2`}
-    >
+    <button type={type} onClick={onClick} className={`${centerContent && "place-content-center"} ${bgColor} flex w-full p-2 rounded-md hover:bg-gray-200 gap-2`}>
       {children}
     </button>
   );
 };
 
-export default Button;
+export default LinkButton;

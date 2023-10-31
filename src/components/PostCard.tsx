@@ -8,7 +8,6 @@ import Button from "./Button";
 import CommentSection from "./CommentSection";
 import {
   BookmarkIcon,
-  BuildingOfficeIcon,
   ChatBubbleLeftIcon,
   HandThumbUpIcon,
   ShareIcon,
@@ -151,7 +150,7 @@ const PostCard = ({
       </div>
 
       <div className="flex justify-between pt-2 font-medium text-gray-500">
-        <Button onClick={handleLikeBtn}>
+        <Button onClick={handleLikeBtn} centerContent={true}>
           {postLiked ? (
             <HandThumbUpIconSolid className="w-6 text-blue-600" />
           ) : (
@@ -159,16 +158,19 @@ const PostCard = ({
           )}
           Me gusta
         </Button>
-        <Button onClick={() => setVisibleComments(!visibleComments)}>
+        <Button
+          onClick={() => setVisibleComments(!visibleComments)}
+          centerContent={true}
+        >
           <ChatBubbleLeftIcon className="w-6" />
           Comentar
         </Button>
-        <Button>
+        <Button centerContent={true}>
           <ShareIcon className="w-6" />
           Compartir
         </Button>
       </div>
-      {visibleComments && <CommentSection comments={post.feedback.comments} />}
+      {visibleComments && <CommentSection post={post} />}
     </div>
   );
 };

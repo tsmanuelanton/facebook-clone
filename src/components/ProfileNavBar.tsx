@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LinkButton from "./LinkButton";
 
 const ProfileNavBar = () => {
   const paths = [
@@ -29,17 +29,15 @@ const ProfileNavBar = () => {
       <div className="w-4/6 px-8 border-t-2">
         <div className="flex font-medium text-gray-500">
           {paths.map((path, i) => (
-            <div key={i} className="relative">
-              <Link
-                href={path.url}
-                className={`${
-                  path.name == "Publicaciones"
-                    ? "text-blue-600"
-                    : "hover:bg-gray-200"
-                } group flex w-32 h-12 place-content-center rounded-md m-1`}
-              >
+            <div
+              key={i}
+              className={`${
+                path.name == "Publicaciones" && "text-blue-600"
+              } relative w-32 h-12 m-1`}
+            >
+              <LinkButton href={path.url} centerContent={true}>
                 <p className="self-center">{path.name}</p>
-              </Link>
+              </LinkButton>
               {path.name == "Publicaciones" && (
                 <div className="absolute bottom-0 h-1 w-full bg-blue-600 z-10"></div>
               )}

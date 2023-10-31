@@ -8,18 +8,19 @@ import {
 } from "@heroicons/react/24/outline";
 import { useContext } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import FacebookIcon from "./FacebookIcon";
 import { SessionContext } from "@/context/SessionContext";
 import useComponentVisible from "@/hooks/useComponentVisible";
+import LinkButton from "./LinkButton";
 
 type Props = {
   user: User;
 };
 
 const NavBar = ({ user }: Props) => {
-  const pathname = "/";
+  const pathname = usePathname()
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
 
@@ -30,12 +31,12 @@ const NavBar = ({ user }: Props) => {
       icon: <HomeIcon className="w-7" />,
     },
     {
-      url: "/fiends",
+      url: "",
       name: "Amigos",
       icon: <UsersIcon className="w-7" />,
     },
     {
-      url: "/videos",
+      url: "",
       name: "Videos",
       icon: <VideoCameraIcon className="w-7" />,
     },
@@ -48,18 +49,18 @@ const NavBar = ({ user }: Props) => {
       </div>
       <div className="flex w-3/5 place-content-center font-medium text-gray-500 gap-2">
         {paths.map(({ url, icon, name }) => (
-          <div key={url} className="relative">
-            <Link
-              href={url}
-              className={`${
-                url == pathname ? "text-blue-600" : "hover:bg-gray-200"
-              } group inline-flex w-32 h-12 place-content-center rounded-md mt-1`}
-            >
+          <div
+            key={url}
+            className={`${
+              url == pathname && "text-blue-600"
+            } relative group w-32 h-12 mt-1`}
+          >
+            <LinkButton href={url} centerContent={true}>
               {icon}
               <div className="invisible group-hover:visible absolute top-16 bg-gray-700 p-2 rounded-md text-white text-xs">
                 {name}
               </div>
-            </Link>
+            </LinkButton>
             {url == pathname && (
               <div className="absolute bottom-0 h-1 w-full bg-blue-600 z-10"></div>
             )}

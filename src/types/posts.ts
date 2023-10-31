@@ -5,18 +5,22 @@ export type Post = {
   body: PostBody;
   feedback: {
     likes: string[];
-    comments: PostComment[];
-  };
+    comments: string[];
+  }
 };
 
 export type PostBody = {
   text: string;
   image?: string;
-}
+};
 
-export type PostComment = {
-  id: string;
-  userID: string;
-  text: string;
-  created_at: Date;
-}
+export type PostFeedback ={
+  likes: string[];
+  comments: string[];
+};
+
+export type UpdatePostType = {
+  postID: string;
+  body?: PostBody;
+  feedback?: PostFeedback
+};

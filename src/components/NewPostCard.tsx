@@ -5,20 +5,20 @@ import Button from "./Button";
 import Image from "next/image";
 import { SessionContext } from "@/context/SessionContext";
 import { PostBody } from "@/types/posts";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 
 type Props = {
-  addPostHandler: (post: PostBody) => void
-}
+  addPostHandler: (post: PostBody) => void;
+};
 
-const NewPost = ({addPostHandler}: Props) => {
+const NewPost = ({ addPostHandler }: Props) => {
   const [text, setText] = useState<string>("");
   const { loggedUser } = useContext(SessionContext);
 
   function handleOnSubmit(e: FormEvent<HTMLFormElement>): void {
-    e.preventDefault()
-    if (text)
-      addPostHandler({text})
-    setText("")
+    e.preventDefault();
+    if (text) addPostHandler({ text });
+    setText("");
   }
 
   return (
@@ -34,22 +34,24 @@ const NewPost = ({addPostHandler}: Props) => {
         <form onSubmit={handleOnSubmit} className="flex w-full gap-2">
           <input
             value={text}
-            onChange={({target}) => setText(target.value)}
-            className="rounded-3xl w-full bg-gray-200 p-2"
+            onChange={({ target }) => setText(target.value)}
+            className="w-11/12 rounded-2xl h- bg-gray-200 p-2 focus:outline-none"
             type="text"
             placeholder={`¿Que estás pensando, ${loggedUser?.name}?`}
           />
-          <Button
-            type="submit"
-            title="Publicar"
-            className="p-2 border-2 rounded-md border-indigo-400"
-          >
-            Publicar
-          </Button>
+          <button disabled={text === ""} type="submit" title="Publicar">
+            <PaperAirplaneIcon
+              width={35}
+              height={35}
+              className={`${
+                text === "" ? "text-gray-400" : "text-blue-500"
+              } self-center`}
+            />
+          </button>
         </form>
       </div>
       <div className="flex justify-between pt-2 font-medium text-gray-500">
-        <Button>
+        <Button centerContent={true}>
           <Image
             width={24}
             height={24}
@@ -60,7 +62,7 @@ const NewPost = ({addPostHandler}: Props) => {
           Video en directo
         </Button>
 
-        <Button>
+        <Button centerContent={true}>
           <Image
             width={24}
             height={24}
@@ -71,7 +73,7 @@ const NewPost = ({addPostHandler}: Props) => {
           Foto/video
         </Button>
 
-        <Button>
+        <Button centerContent={true}>
           <Image
             width={24}
             height={24}
