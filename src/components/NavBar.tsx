@@ -1,5 +1,4 @@
 "use client";
-import type { User } from "@/types/user";
 import {
   UsersIcon,
   VideoCameraIcon,
@@ -15,14 +14,11 @@ import { SessionContext } from "@/context/SessionContext";
 import useComponentVisible from "@/hooks/useComponentVisible";
 import LinkButton from "./LinkButton";
 
-type Props = {
-  user: User;
-};
-
-const NavBar = ({ user }: Props) => {
-  const pathname = usePathname()
+const NavBar = () => {
+  const pathname = usePathname();
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
+  const { loggedUser } = useContext(SessionContext);
 
   const paths = [
     {
@@ -31,7 +27,7 @@ const NavBar = ({ user }: Props) => {
       icon: <HomeIcon className="w-7" />,
     },
     {
-      url: "",
+      url: "/friends",
       name: "Amigos",
       icon: <UsersIcon className="w-7" />,
     },
@@ -76,7 +72,7 @@ const NavBar = ({ user }: Props) => {
             width={64}
             height={64}
             className="w-10 h-10 rounded-full self-center"
-            src={user.image}
+            src={loggedUser?.image || ""}
             alt="Profile image"
           />
         </button>
@@ -85,7 +81,7 @@ const NavBar = ({ user }: Props) => {
         </span>
         {isComponentVisible && (
           <div ref={ref} className="absolute top-12 z-10 w-1/5">
-            <UserOptionsCard user={user} />
+            <UserOptionsCard />
           </div>
         )}
       </div>
@@ -95,8 +91,8 @@ const NavBar = ({ user }: Props) => {
 
 export default NavBar;
 
-const UserOptionsCard = ({ user }: { user: User }) => {
-  const { logout } = useContext(SessionContext);
+const UserOptionsCard = () => {
+  const { logout, loggedUser } = useContext(SessionContext);
   const router = useRouter();
   const handleLogout = async () => {
     await logout();
@@ -107,17 +103,17 @@ const UserOptionsCard = ({ user }: { user: User }) => {
     <div className="flex flex-col gap-2 bg-white border border-gray-200 rounded-md shadow-md p-4">
       <div className="inline-flex gap-2 place-items-center ">
         <Link
-          href={`/profile/${user.id}`}
+          href={`/profile/${loggedUser!.id}`}
           className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full"
         >
           <Image
             width={64}
             height={64}
-            src={user.image}
+            src={loggedUser!.image}
             alt="User profile image"
             className="w-9 h-9 rounded-full object-cover"
           />
-          <p className="font-medium self-center">{user.name}</p>
+          <p className="font-medium self-center">{loggedUser!.name}</p>
         </Link>
       </div>
       <div className="inline-flex gap-2 place-items-center">

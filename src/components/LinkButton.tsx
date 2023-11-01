@@ -8,7 +8,7 @@ type Props = {
 
 const LinkButton = ({ href, centerContent, children }: Props) => {
   return (
-    <Link href={href} className={`${centerContent && "place-content-center"} flex w-full p-2 rounded-md hover:bg-gray-200 gap-2`}>
+    <Link href={href} className={`${centerContent && "place-content-center"} flex relative w-full place-items-center font-medium p-2 rounded-md hover:bg-gray-200 gap-2`}>
       {children}
     </Link>
   );
