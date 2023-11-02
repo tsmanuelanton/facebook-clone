@@ -3,7 +3,6 @@ import PostCardList from "../../components/PostCardList";
 import LeftNavBar from "../../components/LeftNavBar";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { getPosts } from "@/lib/firebase/firestore/posts";
 import { getUser } from "@/lib/firebase/firestore/users";
 import LinkButton from "@/components/LinkButton";

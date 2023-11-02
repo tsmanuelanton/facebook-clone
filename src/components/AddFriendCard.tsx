@@ -3,9 +3,10 @@ import Image from "next/image";
 
 type Props = {
   user: User;
+  sendFriedRequest: (receiverUserID: string) => void;
 };
 
-const AddFriendCard = ({ user }: Props) => {
+const AddFriendCard = ({ user, sendFriedRequest }: Props) => {
   return (
     <div className="bg-white shadow-md rounded-lg">
       <div className="h-56 relative">
@@ -20,14 +21,16 @@ const AddFriendCard = ({ user }: Props) => {
         </a>
       </div>
       <div className="p-3 font-medium">
-          <a href={`/profile/${user.id}`} className="hover:underline">
-            {user.name}
-          </a>
+        <a href={`/profile/${user.id}`} className="hover:underline">
+          {user.name}
+        </a>
         <div className="flex flex-col gap-2 mt-6">
-          <button className="p-1 bg-blue-500 text-white rounded-md">
-            Agregar amigo
+          <button
+            onClick={() => sendFriedRequest(user.id)}
+            className="p-1 bg-blue-500 text-white rounded-md"
+          >
+            Añadir amigo
           </button>
-          <button className="p-1 bg-gray-200 rounded-md">Eliminar</button>
         </div>
       </div>
     </div>

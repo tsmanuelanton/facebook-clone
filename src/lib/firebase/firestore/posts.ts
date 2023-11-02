@@ -17,16 +17,18 @@ const postsCollection = collection(db, "posts");
 
 export const getPost = async (id: string) => {
   const ref = doc(db, "posts", id);
-  const {user, body, created_at, feedback, } = (await getDoc(ref)).data() as any;
+  const { user, body, created_at, feedback } = (
+    await getDoc(ref)
+  ).data() as any;
   const post: Post = {
     id,
     userID: user.id,
     body,
     feedback: {
       likes: feedback.likes,
-      comments: feedback.comments.map((ref : DocumentReference) => ref.id)
+      comments: feedback.comments.map((ref: DocumentReference) => ref.id),
     },
-    created_at
+    created_at,
   };
   return post;
 };
@@ -79,13 +81,18 @@ export const updatePost = async ({
 }: UpdatePostType) => {
   let feedbackAsRef;
 
-  if (feedback){
-    const commentsASRef = await Promise.all(feedback.comments.map(async commentID => doc(db, "comments", commentID)))
-    feedbackAsRef = {likes: feedback.likes, comments: commentsASRef}
+  if (feedback) {
+    const commentsASRef = await Promise.all(
+      feedback.comments.map(async (commentID) => doc(db, "comments", commentID))
+    );
+    feedbackAsRef = { likes: feedback.likes, comments: commentsASRef };
   }
 
-  let toUpdate = {};
-  toUpdate = Object.assign(toUpdate, body && { body }, feedbackAsRef && {feedback : feedbackAsRef});
+  const data = Object.assign(
+    {},
+    body && { body },
+    feedbackAsRef && { feedback: feedbackAsRef }
+  );
 
-  updateDoc(doc(db, "posts", postID), toUpdate);
+  updateDoc(doc(db, "posts", postID), data);
 };
