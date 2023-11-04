@@ -13,12 +13,20 @@ import FacebookIcon from "./FacebookIcon";
 import { SessionContext } from "@/context/SessionContext";
 import useComponentVisible from "@/hooks/useComponentVisible";
 import LinkButton from "./LinkButton";
+import Button from "./Button";
 
 const NavBar = () => {
   const pathname = usePathname();
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
-  const { loggedUser } = useContext(SessionContext);
+  const { loggedUser, logout } = useContext(SessionContext);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    setIsComponentVisible(false);
+    await logout();
+    return router.push("/login");
+  };
 
   const paths = [
     {
@@ -81,7 +89,7 @@ const NavBar = () => {
         </span>
         {isComponentVisible && (
           <div ref={ref} className="absolute top-12 z-10 w-1/5">
-            <UserOptionsCard />
+            <UserOptionsCard handleLogout={handleLogout} />
           </div>
         )}
       </div>
@@ -91,13 +99,8 @@ const NavBar = () => {
 
 export default NavBar;
 
-const UserOptionsCard = () => {
-  const { logout, loggedUser } = useContext(SessionContext);
-  const router = useRouter();
-  const handleLogout = async () => {
-    await logout();
-    router.push(window.location.origin + "/login");
-  };
+const UserOptionsCard = ({ handleLogout }: any) => {
+  const { loggedUser } = useContext(SessionContext);
 
   return (
     <div className="flex flex-col gap-2 bg-white border border-gray-200 rounded-md shadow-md p-4">
@@ -117,13 +120,10 @@ const UserOptionsCard = () => {
         </Link>
       </div>
       <div className="inline-flex gap-2 place-items-center">
-        <button
-          onClick={handleLogout}
-          className="flex p-2 rounded-md hover:bg-gray-200 gap-2 w-full place-items-center"
-        >
+        <Button onClick={handleLogout}>
           <ArrowRightOnRectangleIcon className="w-8 rounded-full bg-gray-500" />
           Cerrar sesión
-        </button>
+        </Button>
       </div>
     </div>
   );
